@@ -1,0 +1,47 @@
+{
+  "name": "@bitfiber/ng",
+  "description": "Reactive State and Async Workflow Management Library for Angular",
+  "version": "17.0.0",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitfiber/ng.git",
+    "directory": "ng"
+  },
+  "keywords": [
+    "Typescript",
+    "Rx",
+    "RxJS",
+    "Reactive",
+    "State",
+    "Store",
+    "Utils",
+    "Services",
+    "UI"
+  ],
+  "author": {
+    "name": "Oleksandr Zmanovskyi",
+    "email": "bitfiber.web@gmail.com"
+  },
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/bitfiber/ng/issues"
+  },
+  "homepage": "https://github.com/bitfiber/ng",
+  "peerDependencies": {
+    "@angular/core": "^17.0.0",
+    "@angular/forms": "^17.0.0",
+    "@angular/router": "^17.0.0",
+    "@bitfiber/utils": "^1.1.1",
+    "@bitfiber/rx": "^1.0.5"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "typesVersions": {
+    ">=4.8.2": {
+      "*": ["rx/*"]
+    }
+  },
+  "type": "module"
+}
