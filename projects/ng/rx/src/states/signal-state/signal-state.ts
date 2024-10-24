@@ -1,9 +1,9 @@
 import {signal, Signal, WritableSignal} from '@angular/core';
 import {toObservable} from '@angular/core/rxjs-interop';
 
-import {filter, Observable} from 'rxjs';
+import {filter, Observable, OperatorFunction} from 'rxjs';
 import {copy} from '@bitfiber/utils';
-import {AbstractState, completeWith} from '@bitfiber/rx';
+import {AbstractState, completeWith, operator} from '@bitfiber/rx';
 
 export type SignalStateType<T> = SignalState<T> & Signal<T>;
 
@@ -79,10 +79,10 @@ export class SignalState<T> extends AbstractState<T> {
 
     this.$ = (state as any).$ = toObservable(state.value).pipe(
       completeWith(state.subject),
-      filter((_, index) => {
+      lazyEmission(state, () => {
         const {hasLazyEmission, hasLazyEmissionOnce} = state;
         state.hasLazyEmissionOnce = false;
-        return index > 0 || (!hasLazyEmission && !hasLazyEmissionOnce);
+        return hasLazyEmission || hasLazyEmissionOnce;
       }),
       state.manager(),
     );
@@ -153,4 +153,31 @@ export class SignalState<T> extends AbstractState<T> {
       }
     }
   }
+}
+
+/**
+ * Creates an operator that conditionally emits values lazily based on the provided condition.
+ * If the `condition` function returns `true`, the emission will be deferred (lazy emission).
+ * Otherwise, the observable emits values immediately
+ *
+ * @template T - The type of the values emitted by the observable
+ *
+ * @param condition - A function that returns `true` to enable lazy emission,
+ * or `false` for immediate emission
+ */
+function lazyEmission<T>(
+  state: SignalStateType<T>,
+  condition: () => boolean,
+): OperatorFunction<T, T> {
+  return operator<T, T>((source, subscriber) => {
+    const isLazy = condition();
+    let startValue: T | null = state();
+    return source
+      .pipe(filter((_, index) => {
+        const isEqual = startValue === state();
+        startValue = null;
+        return index > 0 || !isEqual || !isLazy;
+      }))
+      .subscribe(subscriber);
+  });
 }
