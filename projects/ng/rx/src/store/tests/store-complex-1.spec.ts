@@ -51,13 +51,11 @@ describe('@bitfiber/ng/rx/NgStore1', () => {
       providers: [EntitiesStore],
     });
     testStore = TestBed.inject(EntitiesStore);
-    TestBed.flushEffects();
     testStore.unregisterOnDestroy();
   });
 
   it('Final data is received', done => {
     testStore.initialize();
-    TestBed.flushEffects();
 
     testStore.data.tap(data => {
       if (data.entities.length) {
@@ -68,11 +66,9 @@ describe('@bitfiber/ng/rx/NgStore1', () => {
         done();
       }
     });
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testStore.start.emit();
-      TestBed.flushEffects();
     }, 50);
   });
 });

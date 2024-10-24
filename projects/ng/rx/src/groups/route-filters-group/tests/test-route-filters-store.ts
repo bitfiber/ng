@@ -63,7 +63,6 @@ export function createRouteFiltersStore<Q extends Index = object, P extends Inde
         fragment$.next(settings?.fragment || null);
       }
 
-      TestBed.flushEffects();
       return Promise.resolve();
     }
   }
@@ -86,7 +85,6 @@ export function createRouteFiltersStore<Q extends Index = object, P extends Inde
   });
 
   const store = TestBed.inject(TestRouteFiltersStore<Q, P>);
-  TestBed.flushEffects();
   store.unregisterOnDestroy();
   return store;
 }

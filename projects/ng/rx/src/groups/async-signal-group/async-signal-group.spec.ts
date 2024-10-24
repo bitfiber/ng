@@ -30,7 +30,6 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
       providers: [TestAsyncStore],
     });
     store = TestBed.inject(TestAsyncStore);
-    TestBed.flushEffects();
     store.unregisterOnDestroy();
     testGroup = store.testGroup;
   });

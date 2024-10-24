@@ -105,13 +105,11 @@ describe('@bitfiber/ng/rx/NgStore2', () => {
       providers: [EntitiesStore],
     });
     testStore = TestBed.inject(EntitiesStore);
-    TestBed.flushEffects();
     testStore.unregisterOnDestroy();
   });
 
   it('Final data is received', done => {
     testStore.initialize();
-    TestBed.flushEffects();
 
     testStore.data.tap(data => {
       if (data.entities.length === 3) {
@@ -125,15 +123,12 @@ describe('@bitfiber/ng/rx/NgStore2', () => {
         done();
       }
     });
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testStore.start.emit();
-      TestBed.flushEffects();
 
       setTimeout(() => {
         testStore.filters.set({search: 'aa', page: 2});
-        TestBed.flushEffects();
       }, 150);
     }, 30);
   });

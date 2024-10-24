@@ -1,6 +1,4 @@
-import {TestBed} from '@angular/core/testing';
-
-import {delay, of, tap} from 'rxjs';
+import {delay, of} from 'rxjs';
 import {emitter} from '@bitfiber/rx';
 
 import {SignalStateType} from '../../../';
@@ -29,7 +27,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       });
     someEmitter.emit('value1');
-    TestBed.flushEffects();
   });
 
   it('State receives value from emitter of another type', done => {
@@ -43,7 +40,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       });
     someEmitter.emit(1);
-    TestBed.flushEffects();
   });
 
   it('State receives value from state', done => {
@@ -56,7 +52,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       });
     stringState.set('value1');
-    TestBed.flushEffects();
   });
 
   it('State receives initial value from state', done => {
@@ -68,7 +63,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       })
       .receive(stringState);
-    TestBed.flushEffects();
   });
 
   it('State receives value from state of another type', done => {
@@ -81,7 +75,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       });
     numberState.set(1);
-    TestBed.flushEffects();
   });
 
   it('State receives value from an observable', done => {
@@ -94,7 +87,6 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       })
       .receive(observable);
-    TestBed.flushEffects();
   });
 
   it('State receives value from an observable of another type', done => {
@@ -107,13 +99,10 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       })
       .receive(observable, v => `value${v}`);
-    TestBed.flushEffects();
   });
 
   it('State receives value from multiple sources', done => {
-    const observable = of('value3').pipe(delay(30), tap(() => setTimeout(() => {
-      TestBed.flushEffects();
-    })));
+    const observable = of('value3').pipe(delay(30));
     const someEmitter = emitter<string>();
     const result: string[] = [];
     testState
@@ -125,11 +114,9 @@ describe('@bitfiber/ng/rx/signalState/receive', () => {
         }
       })
       .receive(observable, someEmitter, stringState);
-    TestBed.flushEffects();
 
     setTimeout(() => {
       someEmitter.emit('value4');
-      TestBed.flushEffects();
     }, 60);
   });
 });

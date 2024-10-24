@@ -71,7 +71,6 @@ describe('@bitfiber/ng/rx/NgStore', () => {
       providers: [EntitiesStore],
     });
     testStore = TestBed.inject(EntitiesStore);
-    TestBed.flushEffects();
     testStore.unregisterOnDestroy();
   });
 

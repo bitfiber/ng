@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {RouteFiltersGroup} from '../../../';
 import {
   createRouteFiltersStore, RouteParams, RouteQueryParams, TestRouteFiltersStore,
@@ -18,7 +16,6 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
     });
     testGroup = store.testGroup;
     testGroup.initialize();
-    TestBed.flushEffects();
   });
 
   it('The filters state and form receives start route data', done => {
@@ -27,37 +24,26 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
       expect(testGroup.form.value).toEqual({
         id: 1, type: 'new', search: 'str', page: 2, groupId: 7,
       });
-    });
-    TestBed.flushEffects();
-
-    setTimeout(() => {
       done();
     });
   });
 
   it('The filters state and form receives changed form data', done => {
     testGroup.form.patchValue({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-    TestBed.flushEffects();
 
     setTimeout(() => {
-      TestBed.flushEffects();
-
-      setTimeout(() => {
-        testGroup.filters.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-          expect(testGroup.form.value).toEqual({
-            id: 1, type: 'old', search: 'str2', page: 3, groupId: 10,
-          });
+      testGroup.filters.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
+        expect(testGroup.form.value).toEqual({
+          id: 1, type: 'old', search: 'str2', page: 3, groupId: 10,
         });
-        TestBed.flushEffects();
         done();
-      }, 30);
+      });
     }, 150);
   });
 
   it('The filters state and form receives changed route data', done => {
     testGroup.route.changeUrl({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testGroup.filters.tap(data => {
@@ -65,15 +51,13 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
         expect(testGroup.form.value).toEqual({
           id: 1, type: 'old', search: 'str2', page: 3, groupId: 10,
         });
+        done();
       });
-      TestBed.flushEffects();
-      done();
     });
   });
 
   it('The filters state and form receives changed itself data', done => {
     testGroup.filters.set({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testGroup.filters.tap(data => {
@@ -81,15 +65,13 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
         expect(testGroup.form.value).toEqual({
           id: 1, type: 'old', search: 'str2', page: 3, groupId: 10,
         });
+        done();
       });
-      TestBed.flushEffects();
-      done();
     });
   });
 
   it('The filters state and form reset to initial route data', done => {
     testGroup.route.resetUrl();
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testGroup.filters.tap(data => {
@@ -97,15 +79,13 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
         expect(testGroup.form.value).toEqual({
           id: 0, type: 'all', search: '', page: 1, groupId: null,
         });
+        done();
       });
-      TestBed.flushEffects();
-      done();
     });
   });
 
   it('The filters state and form reset to itself initial data', done => {
     testGroup.filters.reset();
-    TestBed.flushEffects();
 
     setTimeout(() => {
       testGroup.filters.tap(data => {
@@ -113,9 +93,8 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
         expect(testGroup.form.value).toEqual({
           id: 0, type: 'all', search: '', page: 1, groupId: null,
         });
+        done();
       });
-      TestBed.flushEffects();
-      done();
     });
   });
 });

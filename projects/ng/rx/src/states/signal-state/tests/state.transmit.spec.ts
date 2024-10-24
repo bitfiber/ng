@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {Subject} from 'rxjs';
 import {emitter} from '@bitfiber/rx';
 
@@ -26,7 +24,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       done();
     });
     testState.set('value1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to emitter of another type', done => {
@@ -37,7 +34,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       done();
     });
     testState.set('1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to state', done => {
@@ -49,7 +45,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       }
     });
     testState.set('value1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to state of another type', done => {
@@ -61,7 +56,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       }
     });
     testState.set('1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to a subject', done => {
@@ -72,7 +66,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       done();
     });
     testState.set('value1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to a subject of another type', done => {
@@ -83,7 +76,6 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       done();
     });
     testState.set('1');
-    TestBed.flushEffects();
   });
 
   it('State transmits value to multiple sources', done => {
@@ -104,12 +96,12 @@ describe('@bitfiber/ng/rx/signalState/transmit', () => {
       result.push(`${v}E`);
     });
 
-    testState.transmit(someEmitter, stringState);
-    TestBed.flushEffects();
-
     setTimeout(() => {
-      testState.set('value2');
-      TestBed.flushEffects();
+      testState.transmit(someEmitter, stringState);
+
+      setTimeout(() => {
+        testState.set('value2');
+      });
     });
   });
 });

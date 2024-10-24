@@ -13,7 +13,6 @@ export function createStore<T>(initialValue: T, initialValue2?: T) {
     ],
   });
   const store = TestBed.inject(TestSignalStore<T>);
-  TestBed.flushEffects();
   store.unregisterOnDestroy();
   return store;
 }

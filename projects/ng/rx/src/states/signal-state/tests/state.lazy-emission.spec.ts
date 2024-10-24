@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {tap} from 'rxjs';
 
 import {SignalStateType} from '../../../';
@@ -29,8 +27,6 @@ describe('@bitfiber/ng/rx/signalState/lazyEmission', () => {
 
     setTimeout(() => {
       testState.set('value1');
-      TestBed.flushEffects();
-
       setTimeout(() => {
         expect(result).toEqual(['value1', 'value1', 'value1']);
         done();
@@ -45,7 +41,8 @@ describe('@bitfiber/ng/rx/signalState/lazyEmission', () => {
       .tap(v => {
         result.push(v);
       })
-      .useLazyEmissionOnce().effect(tap(v => {
+      .useLazyEmissionOnce()
+      .effect(tap(v => {
         result.push(`${v}once`);
       }))
       .$.subscribe(v => {
@@ -54,8 +51,6 @@ describe('@bitfiber/ng/rx/signalState/lazyEmission', () => {
 
     setTimeout(() => {
       testState.set('value1');
-      TestBed.flushEffects();
-
       setTimeout(() => {
         expect(result).toEqual(['initialValue', 'initialValue', 'value1', 'value1once', 'value1']);
         done();

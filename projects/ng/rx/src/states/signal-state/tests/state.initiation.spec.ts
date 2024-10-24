@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {SignalStateType} from '../../../';
 import {createStore} from './test-signal-store';
 
@@ -37,10 +35,8 @@ describe('@bitfiber/ng/rx/signalState/initialization', () => {
 
     setTimeout(() => {
       testState.set('value1');
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set('value2');
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.initialize();
         });
@@ -53,6 +49,5 @@ describe('@bitfiber/ng/rx/signalState/initialization', () => {
       expect(v).toBe('initialValue');
       done();
     });
-    testState.set('value2');
   });
 });

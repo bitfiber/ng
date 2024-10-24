@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {Index} from '@bitfiber/utils';
 
 import {SignalStateType} from '../../../';
@@ -15,7 +13,6 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
   it('Initial value is changed', () => {
     const value1 = {value1: true};
     testState.set(value1);
-    TestBed.flushEffects();
     expect(testState.get()).toBe(value1);
   });
 
@@ -29,13 +26,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value2);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value2);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(3);
             done();
@@ -56,13 +50,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value21);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value22);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(4);
             done();
@@ -82,13 +73,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value2);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value2);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(3);
             done();
@@ -109,13 +97,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value21);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value22);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(3);
             done();
@@ -135,13 +120,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value2);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value2);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(3);
             done();
@@ -161,13 +143,10 @@ describe('@bitfiber/ng/rx/signalState/set', () => {
 
     setTimeout(() => {
       testState.set(value1);
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.set(value2);
-        TestBed.flushEffects();
         setTimeout(() => {
           testState.set(value2);
-          TestBed.flushEffects();
           setTimeout(() => {
             expect(counter).toBe(4);
             done();

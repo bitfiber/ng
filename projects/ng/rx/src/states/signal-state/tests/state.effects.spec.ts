@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {tap} from 'rxjs';
 import {equals} from '@bitfiber/utils';
 
@@ -27,8 +25,10 @@ describe('@bitfiber/ng/rx/signalState/effects', () => {
         done();
       }
     });
-    testState.set('value1');
-    TestBed.flushEffects();
+
+    setTimeout(() => {
+      testState.set('value1');
+    });
   });
 
   it('State effect emits a value', done => {
@@ -40,8 +40,10 @@ describe('@bitfiber/ng/rx/signalState/effects', () => {
         done();
       }
     }));
-    testState.set('value1');
-    TestBed.flushEffects();
+
+    setTimeout(() => {
+      testState.set('value1');
+    });
   });
 
   it('State observable emits a value', done => {
@@ -53,7 +55,9 @@ describe('@bitfiber/ng/rx/signalState/effects', () => {
         done();
       }
     });
-    testState.set('value1');
-    TestBed.flushEffects();
+
+    setTimeout(() => {
+      testState.set('value1');
+    });
   });
 });

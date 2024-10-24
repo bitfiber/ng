@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {MemoryStorage, MemoryStoragePart} from '@bitfiber/rx';
 
 import {SignalStateType} from '../../../';
@@ -16,7 +14,6 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
 
   it('State is undefined if state and source is undefined', done => {
     testState.connect(testSource);
-    TestBed.flushEffects();
     setTimeout(() => {
       expect(testState.get()).toBeUndefined();
       done();
@@ -27,7 +24,6 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
     testSource.set('value1');
     setTimeout(() => {
       testState.connect(testSource);
-      TestBed.flushEffects();
       setTimeout(() => {
         expect(testState.get()).toBe('value1');
         done();
@@ -37,10 +33,8 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
 
   it('State does not receive a source value if source is undefined', done => {
     testState.set('value1');
-    TestBed.flushEffects();
     setTimeout(() => {
       testState.connect(testSource);
-      TestBed.flushEffects();
       setTimeout(() => {
         expect(testState.get()).toBe('value1');
         done();
@@ -50,10 +44,8 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
 
   it('Undefined source receives a state value', done => {
     testState.set('value1');
-    TestBed.flushEffects();
     setTimeout(() => {
       testState.connect(testSource);
-      TestBed.flushEffects();
       setTimeout(() => {
         expect(testSource.get()).toBe('value1');
         done();
@@ -63,13 +55,10 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
 
   it('State receives a source value if both is defined', done => {
     testState.set('value1');
-    TestBed.flushEffects();
     setTimeout(() => {
       testSource.set('value2');
-      TestBed.flushEffects();
       setTimeout(() => {
         testState.connect(testSource);
-        TestBed.flushEffects();
         setTimeout(() => {
           expect(testState.get()).toBe('value2');
           done();
@@ -79,22 +68,16 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
   });
 
   it('Source receives a changed state value after initialization', done => {
+    testState.set('value1');
     setTimeout(() => {
-      testState.set('value1');
-      TestBed.flushEffects();
+      testSource.set('value2');
       setTimeout(() => {
-        testSource.set('value2');
-        TestBed.flushEffects();
+        testState.connect(testSource);
         setTimeout(() => {
-          testState.connect(testSource);
-          TestBed.flushEffects();
+          testState.set('value3');
           setTimeout(() => {
-            testState.set('value3');
-            TestBed.flushEffects();
-            setTimeout(() => {
-              expect(testSource.get()).toBe('value3');
-              done();
-            });
+            expect(testSource.get()).toBe('value3');
+            done();
           });
         });
       });
@@ -102,22 +85,16 @@ describe('@bitfiber/ng/rx/signalState/source', () => {
   });
 
   it('State receives a changed source value after initialization', done => {
+    testState.set('value1');
     setTimeout(() => {
-      testState.set('value1');
-      TestBed.flushEffects();
+      testSource.set('value2');
       setTimeout(() => {
-        testSource.set('value2');
-        TestBed.flushEffects();
+        testState.connect(testSource);
         setTimeout(() => {
-          testState.connect(testSource);
-          TestBed.flushEffects();
+          testSource.set('value3');
           setTimeout(() => {
-            testSource.set('value3');
-            TestBed.flushEffects();
-            setTimeout(() => {
-              expect(testState.get()).toBe('value3');
-              done();
-            });
+            expect(testState.get()).toBe('value3');
+            done();
           });
         });
       });

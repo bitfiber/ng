@@ -61,7 +61,6 @@ export function createRouteStore<Q extends Index = object, P extends Index = obj
         fragment$.next(settings?.fragment || null);
       }
 
-      TestBed.flushEffects();
       return Promise.resolve();
     }
   }
@@ -84,7 +83,6 @@ export function createRouteStore<Q extends Index = object, P extends Index = obj
   });
 
   const store = TestBed.inject(TestRouteStore<Q, P>);
-  TestBed.flushEffects();
   store.unregisterOnDestroy();
   return store;
 }

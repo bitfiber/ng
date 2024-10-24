@@ -1,6 +1,4 @@
-import {TestBed} from '@angular/core/testing';
-
-import {delay, of, tap} from 'rxjs';
+import {delay, of} from 'rxjs';
 import {emitter} from '@bitfiber/rx';
 
 import {SignalStateType} from '../../../';
@@ -30,9 +28,7 @@ describe('@bitfiber/ng/rx/signalState/zip', () => {
         }
       });
     someEmitter1.emit('value1');
-    TestBed.flushEffects();
     someEmitter2.emit(2);
-    TestBed.flushEffects();
   });
 
   it('State selects value from states', done => {
@@ -44,17 +40,11 @@ describe('@bitfiber/ng/rx/signalState/zip', () => {
         }
       })
       .zip(stringState, numberState, (v1, v2) => v1 + v2);
-    TestBed.flushEffects();
   });
 
   it('State selects value from observables', done => {
-    const observable1 = of('value1').pipe(delay(30), tap(() => setTimeout(() => {
-      TestBed.flushEffects();
-    })));
-
-    const observable2 = of(2).pipe(delay(60), tap(() => setTimeout(() => {
-      TestBed.flushEffects();
-    })));
+    const observable1 = of('value1').pipe(delay(30));
+    const observable2 = of(2).pipe(delay(60));
 
     testState
       .tap(v => {
@@ -68,9 +58,7 @@ describe('@bitfiber/ng/rx/signalState/zip', () => {
 
   it('State selects value from different sources', done => {
     const someEmitter = emitter<string>();
-    const observable = of('value3').pipe(delay(30), tap(() => setTimeout(() => {
-      TestBed.flushEffects();
-    })));
+    const observable = of('value3').pipe(delay(30));
 
     testState
       .tap(v => {
@@ -80,11 +68,9 @@ describe('@bitfiber/ng/rx/signalState/zip', () => {
         }
       })
       .zip(stringState, observable, someEmitter, (v1, v2, v3) => v1 + v2 + v3);
-    TestBed.flushEffects();
 
     setTimeout(() => {
       someEmitter.emit('value4');
-      TestBed.flushEffects();
     }, 60);
   });
 });

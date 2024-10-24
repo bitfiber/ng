@@ -1,5 +1,3 @@
-import {TestBed} from '@angular/core/testing';
-
 import {delay, map, tap} from 'rxjs';
 import {equals} from '@bitfiber/utils';
 
@@ -38,7 +36,6 @@ describe('@bitfiber/ng/rx/signalState/manage', () => {
 
     setTimeout(() => {
       testState.set('value1');
-      TestBed.flushEffects();
     }, 60);
   });
 });
