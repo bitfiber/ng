@@ -4,7 +4,7 @@
 [![GitHub star chart](https://img.shields.io/github/stars/bitfiber/ng?style=social)](https://star-history.com/#bitfiber/ng)
 [![GitHub fork](https://img.shields.io/github/forks/bitfiber/ng?style=social)](https://github.com/bitfiber/ng/fork)
 
-`@bitfiber/ng/rx` is an Angular-specific extension of `@bitfiber/rx` built on top of RxJS,
+`@bitfiber/ng/rx` is an Angular-specific extension of [@bitfiber/rx](https://github.com/bitfiber/rx) built on top of [RxJS](https://github.com/ReactiveX/rxjs),
 designed to manage reactive state, asynchronous workflows, and events in Angular applications.
 It provides a structured approach to handling complex data flows using emitters, states, groups,
 and stores, allowing seamless integration of various reactive sources like emitters, states,
@@ -16,7 +16,7 @@ management and lifecycle control of related reactive sources.
 ## Key Components
 
 1. **Reactive Store (@bitfiber/ng/rx)**  
-   An Angular-specific extension of `@bitfiber/rx`, designed to enhance reactive state management
+   An Angular-specific extension of [@bitfiber/rx](https://github.com/bitfiber/rx), designed to enhance reactive state management
    within Angular applications. It adds several powerful features, including:  
    `NgStore`: Extends the base store for improved integration with Angular’s service lifecycle.  
    `Signal State`: Manages reactive data that can be used like Angular signals.  
