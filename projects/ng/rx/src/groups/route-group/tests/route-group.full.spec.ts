@@ -18,7 +18,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All group states receive start route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     testGroup.params.tap(data => {
@@ -47,7 +47,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All group states receive changed route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -81,7 +81,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All group states reset to initial route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -115,7 +115,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All params state receives changed params data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -149,7 +149,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All params state receives changed query params data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -183,7 +183,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All group states receive changed all params data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -217,7 +217,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('Only the fragment state is changed after a fragment change', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -251,7 +251,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('Only the params and all params state are reset after a params reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -285,7 +285,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('Only the query params and all params state are reset after a query params reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -319,7 +319,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('The all param states are reset after a all params reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -353,7 +353,7 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('Only the fragment state is reset after a fragment reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {

@@ -37,7 +37,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/initiation', () => {
   });
 
   it('Group initializes all nested states', () => {
-    testGroup.initialize();
+    store.initialize();
     expect(testGroup.filters.isInitialized()).toBeTruthy();
     expect(testGroup.route.isInitialized()).toBeTruthy();
     expect(testGroup.route.params.isInitialized()).toBeTruthy();

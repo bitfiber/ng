@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state receives start route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     testGroup.params.tap(data => {
@@ -45,7 +45,7 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state receives changed route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -79,7 +79,7 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state resets to initial route data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -113,7 +113,7 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state receives changed data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -147,7 +147,7 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state resets to initial data', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {

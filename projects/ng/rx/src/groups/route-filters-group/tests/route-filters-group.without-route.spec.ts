@@ -18,7 +18,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/withoutRoute', () => {
       withoutRoute: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
   });
 

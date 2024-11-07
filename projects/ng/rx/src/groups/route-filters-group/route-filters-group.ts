@@ -192,7 +192,7 @@ export class RouteFiltersGroup<
 
     this.route = routeGroup<Q, P>(routeSettings);
     this.filters = this.#createFiltersState();
-    this.setItems([this.route, this.filters]);
+    this.markAsReady();
 
     this.form = this.#createForm();
     this.#controlsFlow = this.#getControlsFlow(settings);

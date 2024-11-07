@@ -95,6 +95,8 @@ class EntitiesStore extends NgStore {
         },
       ),
   );
+
+  ready = this.markAsReady();
 }
 
 describe('@bitfiber/ng/rx/NgStore2', () => {

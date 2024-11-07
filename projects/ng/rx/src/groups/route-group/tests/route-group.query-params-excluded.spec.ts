@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     testGroup.params.tap(data => {
@@ -45,7 +45,7 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param after route change', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -79,7 +79,7 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param after route reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -113,7 +113,7 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param after change', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -147,7 +147,7 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param after reset', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {

@@ -41,6 +41,8 @@ class EntitiesStore extends NgStore {
     .select(this.entitiesReq.success, entities => {
       return {...data(), entities};
     }));
+
+  ready = this.markAsReady();
 }
 
 describe('@bitfiber/ng/rx/NgStore1', () => {

@@ -17,7 +17,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
   });
 

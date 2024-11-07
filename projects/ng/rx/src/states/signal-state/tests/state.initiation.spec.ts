@@ -1,13 +1,15 @@
 import {TestBed} from '@angular/core/testing';
 
 import {SignalStateType} from '../../../';
-import {createStore} from './test-signal-store';
+import {createStore, TestSignalStore} from './test-signal-store';
 
 describe('@bitfiber/ng/rx/signalState/initialization', () => {
+  let store: TestSignalStore<string>;
   let testState: SignalStateType<string>;
 
   beforeEach(() => {
-    testState = createStore('initialValue').testState;
+    store = createStore('initialValue');
+    testState = store.testState;
   });
 
   it('State is not initialized', () => {
@@ -15,12 +17,7 @@ describe('@bitfiber/ng/rx/signalState/initialization', () => {
   });
 
   it('State is initialized', () => {
-    testState.initialize();
-    expect(testState.isInitialized()).toBeTruthy();
-  });
-
-  it('State is auto initialized after inner subscription', () => {
-    testState.tap(() => true);
+    store.initialize();
     expect(testState.isInitialized()).toBeTruthy();
   });
 

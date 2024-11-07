@@ -32,7 +32,7 @@ describe('@bitfiber/ng/rx/routeGroup/initiation', () => {
   });
 
   it('Group initializes all nested states', () => {
-    testGroup.initialize();
+    store.initialize();
     expect(testGroup.isInitialized()).toBeTruthy();
     expect(testGroup.params.isInitialized()).toBeTruthy();
     expect(testGroup.queryParams.isInitialized()).toBeTruthy();

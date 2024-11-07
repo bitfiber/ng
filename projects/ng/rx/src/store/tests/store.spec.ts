@@ -38,6 +38,8 @@ class EntitiesStore extends NgStore {
       return {entities, isLoading: inProgress};
     }));
 
+  ready = this.markAsReady();
+
   beforeStoreInit(): void {
     if (!this.isInitialized()) {
       this.notInitializedBeforeInit = true;

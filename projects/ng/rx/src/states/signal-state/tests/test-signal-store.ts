@@ -19,7 +19,7 @@ export function createStore<T>(initialValue: T, initialValue2?: T) {
 }
 
 @Injectable()
-class TestSignalStore<T> extends NgStore {
+export class TestSignalStore<T> extends NgStore {
   testState: SignalStateType<T>;
   stringState: SignalStateType<T>;
   numberState: SignalStateType<number>;
@@ -29,5 +29,6 @@ class TestSignalStore<T> extends NgStore {
     this.testState = signalState<T>(initialValue);
     this.stringState = signalState<T>(initialValue2 || initialValue);
     this.numberState = signalState<number>(0);
+    this.markAsReady();
   }
 }

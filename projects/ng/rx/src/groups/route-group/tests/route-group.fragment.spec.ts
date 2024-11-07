@@ -13,7 +13,7 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state receives start route value', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     testGroup.params.tap(data => {
@@ -42,7 +42,7 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state receives changed route value', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -76,7 +76,7 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state resets to initial route value', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -110,7 +110,7 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state receives changed value', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
@@ -144,7 +144,7 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state resets to initial value', done => {
-    testGroup.initialize();
+    store.initialize();
     TestBed.flushEffects();
 
     setTimeout(() => {
