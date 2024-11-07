@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/controlFlow', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The custom control flow works', done => {

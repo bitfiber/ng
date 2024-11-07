@@ -16,7 +16,8 @@ describe('@bitfiber/ng/rx/routeGroup/completion', () => {
   });
 
   it('Group completes all nested states', () => {
-    testGroup.complete();
+    store.initialize();
+    store.complete();
     expect(testGroup.isCompleted()).toBeTruthy();
     expect(testGroup.params.isCompleted()).toBeTruthy();
     expect(testGroup.queryParams.isCompleted()).toBeTruthy();

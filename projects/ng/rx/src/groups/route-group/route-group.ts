@@ -224,8 +224,7 @@ export class RouteGroup<Q extends Index = object, P extends Index = object> exte
     this.queryParams = this.#createQueryParamsState();
     this.allParams = this.#createAllParamsState();
     this.fragment = this.#createFragmentState();
-
-    this.setItems([this.params, this.queryParams, this.allParams, this.fragment]);
+    this.markAsReady();
   }
 
   /**

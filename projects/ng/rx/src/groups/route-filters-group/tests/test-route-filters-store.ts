@@ -98,5 +98,6 @@ export class TestRouteFiltersStore<
   constructor(settings: RouteFiltersGroupSettings<Q, P>) {
     super();
     this.testGroup = routeFiltersGroup<Q, P>(settings);
+    this.markAsReady();
   }
 }

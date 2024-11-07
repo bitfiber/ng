@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/onControlChange', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The page filter is reset to 1 if any other filter is changed', done => {

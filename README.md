@@ -176,6 +176,12 @@ This method is called automatically when the associated component or service is 
 
 ---
 
+`@method markAsReady(): void`  
+Marks the store as ready, indicating that all store items, such as emitters, states, and groups,
+have been defined. This method must be called after all store items are defined!
+
+---
+
 `@method unregisterOnDestroy(): this`  
 Cancels the registration of automatically completing the store
 when the associated component or service is destroyed  
@@ -314,6 +320,19 @@ class ProductsStore extends NgStore {
         },
       ),
   );
+
+  // Provides the store error handling
+  error = emitter<Error>(error => error
+    // Receives all errors from all async tasks
+    .receive(this.dict1Req.fail, this.dict2Req.fail, this.dict3Req.fail, this.productsReq.fail)
+    // Performs the tap callback each time new error is received
+    .tap(error => {
+      // Performs some error handling logic
+    }));
+
+  // Marks the store as ready, indicating that all store items, such as emitters, states,
+  // and groups, have been defined
+  #ready = this.markAsReady();
 }
 
 ```
@@ -341,7 +360,7 @@ export class ProductsComponent {
 
 ```angular17html
 <!-- products.component.html -->
-@if (store.isLoading()) {
+@if (!store.isLoading()) {
   <div
     class="bf-filters"
     [formGroup]="form"
@@ -350,9 +369,9 @@ export class ProductsComponent {
     <pagenator formControlName="page"/>
   </div>
 
-  @for (product of store.data().products) {
+  @for (product of store.data().products; track product.id) {
     <div class="bf-product">
-      {{product.name}}
+      {{product.name}} - {{product.price}}
     </div>
   }
 } @else {

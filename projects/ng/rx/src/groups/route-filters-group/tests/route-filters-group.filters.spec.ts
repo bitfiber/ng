@@ -15,7 +15,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/filters', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The filters state and form receives start route data', done => {

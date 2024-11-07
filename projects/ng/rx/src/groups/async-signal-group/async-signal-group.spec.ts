@@ -19,6 +19,7 @@ class TestAsyncStore extends NgStore {
       )),
     );
   }, 0);
+  ready = this.markAsReady();
 }
 
 describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
@@ -51,7 +52,7 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   });
 
   it('Group initializes all nested emitters', () => {
-    testGroup.initialize();
+    store.initialize();
     expect(testGroup.launch.isInitialized()).toBeTruthy();
     expect(testGroup.success.isInitialized()).toBeTruthy();
     expect(testGroup.fail.isInitialized()).toBeTruthy();
@@ -60,7 +61,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   });
 
   it('Group completes all nested emitters', () => {
-    testGroup.complete();
+    store.initialize();
+    store.complete();
     expect(testGroup.launch.isCompleted()).toBeTruthy();
     expect(testGroup.success.isCompleted()).toBeTruthy();
     expect(testGroup.fail.isCompleted()).toBeTruthy();
@@ -69,7 +71,7 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   });
 
   it('Returns fallback value if the launch fails', done => {
-    testGroup.initialize();
+    store.initialize();
 
     testGroup.success.tap(data => {
       expect(data).toBe(0);
@@ -92,7 +94,7 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   });
 
   it('Returns correct data if the launch is successful', done => {
-    testGroup.initialize();
+    store.initialize();
 
     testGroup.success.tap(data => {
       expect(data).toBe(1);
@@ -116,7 +118,7 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
 
   it('The finish emitter will emit once if the launch is successful', done => {
     let counter = 0;
-    testGroup.initialize();
+    store.initialize();
 
     testGroup.finish.tap(() => {
       ++counter;
@@ -133,7 +135,7 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
 
   it('The finish emitter will emit once if the launch fails', done => {
     let counter = 0;
-    testGroup.initialize();
+    store.initialize();
 
     testGroup.finish.tap(() => {
       ++counter;
@@ -151,9 +153,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits only the first time if lifetime is 0', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(0, 1)
-      .initialize();
+    testGroup.useCache(0, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -183,9 +184,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits only the first time if lifetime is not exceeded', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(1, 1)
-      .initialize();
+    testGroup.useCache(1, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -215,9 +215,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits every time when lifetime is exceeded', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(0.01, 1)
-      .initialize();
+    testGroup.useCache(0.01, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -244,9 +243,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits only the first time for different requests', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(0, 2)
-      .initialize();
+    testGroup.useCache(0, 2);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -279,9 +277,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits only the first time if the cache handler returns true', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(() => true, 1)
-      .initialize();
+    testGroup.useCache(() => true, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -311,9 +308,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group emits every time if the cache handler returns false', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(() => false, 1)
-      .initialize();
+    testGroup.useCache(() => false, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;
@@ -343,9 +339,8 @@ describe('@bitfiber/ng/rx/asyncSignalGroup', () => {
   it('The cached group removes the previous cache if the cache size is exceeded', done => {
     let launchCounter = 0;
     let successCounter = 0;
-    testGroup
-      .useCache(0, 1)
-      .initialize();
+    testGroup.useCache(0, 1);
+    store.initialize();
 
     testGroup.launch.tap(() => {
       ++launchCounter;

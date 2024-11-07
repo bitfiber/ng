@@ -94,5 +94,6 @@ export class TestRouteStore<Q extends Index = object, P extends Index = object> 
   constructor(settings: RouteGroupSettings<Q, P>) {
     super();
     this.testGroup = routeGroup<Q, P>(settings);
+    this.markAsReady();
   }
 }
