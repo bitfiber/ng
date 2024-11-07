@@ -19,7 +19,7 @@ export abstract class NgStore extends Store {
    * when the associated component or service is destroyed
    * @readonly
    */
-  readonly #unregisterOnDestroy = inject(DestroyRef)
+  private readonly unregisterOnDestroyFn = inject(DestroyRef)
     .onDestroy(() => this.complete());
 
   /**
@@ -27,7 +27,7 @@ export abstract class NgStore extends Store {
    * when the associated component or service is destroyed
    */
   unregisterOnDestroy(): this {
-    this.#unregisterOnDestroy();
+    this.unregisterOnDestroyFn();
     return this;
   }
 }

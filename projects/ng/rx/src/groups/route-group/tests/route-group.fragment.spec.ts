@@ -8,11 +8,10 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   beforeEach(() => {
     store = createRouteStore({hasFragment: true});
     testGroup = store.testGroup;
+    store.initialize();
   });
 
   it('The fragment state receives start route value', done => {
-    testGroup.initialize();
-
     testGroup.params.tap(data => {
       expect(data).toEqual({});
     });
@@ -33,114 +32,98 @@ describe('@bitfiber/ng/rx/routeGroup/fragment', () => {
   });
 
   it('The fragment state receives changed route value', done => {
-    testGroup.initialize();
+    testGroup.fragment.set('fr2');
 
     setTimeout(() => {
-      testGroup.fragment.set('fr2');
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr2');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr2');
+      });
+
+      done();
     });
   });
 
   it('The fragment state resets to initial route value', done => {
-    testGroup.initialize();
+    testGroup.resetUrl();
 
     setTimeout(() => {
-      testGroup.resetUrl();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The fragment state receives changed value', done => {
-    testGroup.initialize();
+    testGroup.fragment.set('fr2');
 
     setTimeout(() => {
-      testGroup.fragment.set('fr2');
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr2');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr2');
+      });
+
+      done();
     });
   });
 
   it('The fragment state resets to initial value', done => {
-    testGroup.initialize();
+    testGroup.fragment.reset();
 
     setTimeout(() => {
-      testGroup.fragment.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 });

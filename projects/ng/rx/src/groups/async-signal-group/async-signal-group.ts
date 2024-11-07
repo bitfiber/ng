@@ -58,15 +58,8 @@ export class AsyncSignalGroup<L, S, F> extends AbstractAsyncGroup<L, S, F> {
   readonly state = signalState<AsyncData>(this.initialState);
 
   /**
-   * Creates the instance and optionally accepts a `fallbackValue`, which serves as
-   * a default value in case the asynchronous action fails, ensuring that the success emitter
-   * always returns a value
-   *
-   * @param [fallbackValue] - An optional fallback value of type `S` that will be used
-   * as the default success value if the asynchronous action fails
+   * Flag indicating that the group is ready and all group items, such as emitters, states,
+   * and groups, have been defined
    */
-  constructor(fallbackValue?: S) {
-    super(fallbackValue);
-    this.setItems([this.launch, this.success, this.fail, this.finish, this.state]);
-  }
+  private ready = this.markAsReady();
 }

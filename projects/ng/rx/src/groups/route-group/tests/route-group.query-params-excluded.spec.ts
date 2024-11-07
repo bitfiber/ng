@@ -11,11 +11,10 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
       excludedParams: ['page'],
     });
     testGroup = store.testGroup;
+    store.initialize();
   });
 
   it('The query params state has no an excluded param', done => {
-    testGroup.initialize();
-
     testGroup.params.tap(data => {
       expect(data).toEqual({});
     });
@@ -36,114 +35,98 @@ describe('@bitfiber/ng/rx/routeGroup/query-params-excluded', () => {
   });
 
   it('The query params state has no an excluded param after route change', done => {
-    testGroup.initialize();
+    testGroup.changeUrl({search: 'str2', page: 3, groupId: 10});
 
     setTimeout(() => {
-      testGroup.changeUrl({search: 'str2', page: 3, groupId: 10});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str2', groupId: 10});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({search: 'str2', groupId: 10});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str2', groupId: 10});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({search: 'str2', groupId: 10});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The query params state has no an excluded param after route reset', done => {
-    testGroup.initialize();
+    testGroup.resetUrl();
 
     setTimeout(() => {
-      testGroup.resetUrl();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: '', groupId: null});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({search: '', groupId: null});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: '', groupId: null});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({search: '', groupId: null});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The query params state has no an excluded param after change', done => {
-    testGroup.initialize();
+    testGroup.queryParams.set({search: 'str2', groupId: 10});
 
     setTimeout(() => {
-      testGroup.queryParams.set({search: 'str2', groupId: 10});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str2', groupId: 10});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({search: 'str2', groupId: 10});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str2', groupId: 10});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({search: 'str2', groupId: 10});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The query params state has no an excluded param after reset', done => {
-    testGroup.initialize();
+    testGroup.queryParams.reset();
 
     setTimeout(() => {
-      testGroup.queryParams.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: '', groupId: null});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({search: '', groupId: null});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: '', groupId: null});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({search: '', groupId: null});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 });

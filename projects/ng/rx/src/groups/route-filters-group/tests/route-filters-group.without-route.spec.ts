@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/withoutRoute', () => {
       withoutRoute: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The filters state does not receive start route data', done => {

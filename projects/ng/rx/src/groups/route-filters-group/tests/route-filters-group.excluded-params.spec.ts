@@ -16,7 +16,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/excludedParams', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The filters state and form receives start route data except excluded params', done => {

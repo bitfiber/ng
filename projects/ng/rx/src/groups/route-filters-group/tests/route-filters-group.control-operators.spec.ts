@@ -18,7 +18,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/controlOperators', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
-    testGroup.initialize();
+    store.initialize();
   });
 
   it('The search filter is changed after debounce time', done => {

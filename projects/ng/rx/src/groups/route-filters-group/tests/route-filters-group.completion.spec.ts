@@ -18,7 +18,8 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/completion', () => {
   });
 
   it('Group completes all nested states', () => {
-    testGroup.complete();
+    store.initialize();
+    store.complete();
     expect(testGroup.isCompleted()).toBeTruthy();
     expect(testGroup.filters.isCompleted()).toBeTruthy();
     expect(testGroup.route.isCompleted()).toBeTruthy();

@@ -13,11 +13,10 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
       hasFragment: true,
     });
     testGroup = store.testGroup;
+    store.initialize();
   });
 
   it('All group states receive start route data', done => {
-    testGroup.initialize();
-
     testGroup.params.tap(data => {
       expect(data).toEqual({id: 1, type: 'new'});
     });
@@ -38,282 +37,242 @@ describe('@bitfiber/ng/rx/routeGroup/full', () => {
   });
 
   it('All group states receive changed route data', done => {
-    testGroup.initialize();
+    testGroup.changeUrl({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10}, 'fr2');
 
     setTimeout(() => {
-      testGroup.changeUrl({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10}, 'fr2');
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr2');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr2');
+      });
+
+      done();
     });
   });
 
   it('All group states reset to initial route data', done => {
-    testGroup.initialize();
+    testGroup.resetUrl();
 
     setTimeout(() => {
-      testGroup.resetUrl();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: '', page: 1, groupId: null});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all', search: '', page: 1, groupId: null});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: '', page: 1, groupId: null});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all', search: '', page: 1, groupId: null});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('All params state receives changed params data', done => {
-    testGroup.initialize();
+    testGroup.params.set({id: 1, type: 'old'});
 
     setTimeout(() => {
-      testGroup.params.set({id: 1, type: 'old'});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old', search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old', search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('All params state receives changed query params data', done => {
-    testGroup.initialize();
+    testGroup.queryParams.set({search: 'str2', page: 3, groupId: 10});
 
     setTimeout(() => {
-      testGroup.queryParams.set({search: 'str2', page: 3, groupId: 10});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new', search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new', search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('All group states receive changed all params data', done => {
-    testGroup.initialize();
+    testGroup.allParams.set({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
 
     setTimeout(() => {
-      testGroup.allParams.set({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old', search: 'str2', page: 3, groupId: 10});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('Only the fragment state is changed after a fragment change', done => {
-    testGroup.initialize();
+    testGroup.fragment.set('fr2');
 
     setTimeout(() => {
-      testGroup.fragment.set('fr2');
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new', search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr2');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new', search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr2');
+      });
+
+      done();
     });
   });
 
   it('Only the params and all params state are reset after a params reset', done => {
-    testGroup.initialize();
+    testGroup.params.reset();
 
     setTimeout(() => {
-      testGroup.params.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all', search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all', search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('Only the query params and all params state are reset after a query params reset', done => {
-    testGroup.initialize();
+    testGroup.queryParams.reset();
 
     setTimeout(() => {
-      testGroup.queryParams.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: '', page: 1, groupId: null});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new', search: '', page: 1, groupId: null});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: '', page: 1, groupId: null});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new', search: '', page: 1, groupId: null});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('The all param states are reset after a all params reset', done => {
-    testGroup.initialize();
+    testGroup.allParams.reset();
 
     setTimeout(() => {
-      testGroup.allParams.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: '', page: 1, groupId: null});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all', search: '', page: 1, groupId: null});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe('fr');
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: '', page: 1, groupId: null});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all', search: '', page: 1, groupId: null});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe('fr');
+      });
+
+      done();
     });
   });
 
   it('Only the fragment state is reset after a fragment reset', done => {
-    testGroup.initialize();
+    testGroup.fragment.reset();
 
     setTimeout(() => {
-      testGroup.fragment.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'new', search: 'str', page: 2, groupId: 7});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'new', search: 'str', page: 2, groupId: 7});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 });

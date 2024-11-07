@@ -87,6 +87,7 @@ export class SignalState<T> extends AbstractState<T> {
       state.manager(),
     );
 
+    state.addToActiveGroup();
     return state;
   }
 
@@ -162,6 +163,7 @@ export class SignalState<T> extends AbstractState<T> {
  *
  * @template T - The type of the values emitted by the observable
  *
+ * @param state - A signal state that applies lazy emission
  * @param condition - A function that returns `true` to enable lazy emission,
  * or `false` for immediate emission
  */

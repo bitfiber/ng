@@ -11,11 +11,10 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
       segments: params => [params.type, params.id],
     });
     testGroup = store.testGroup;
+    store.initialize();
   });
 
   it('The params state receives start route data', done => {
-    testGroup.initialize();
-
     testGroup.params.tap(data => {
       expect(data).toEqual({id: 1, type: 'new'});
     });
@@ -36,114 +35,98 @@ describe('@bitfiber/ng/rx/routeGroup/params', () => {
   });
 
   it('The params state receives changed route data', done => {
-    testGroup.initialize();
+    testGroup.changeUrl({id: 1, type: 'old'});
 
     setTimeout(() => {
-      testGroup.changeUrl({id: 1, type: 'old'});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The params state resets to initial route data', done => {
-    testGroup.initialize();
+    testGroup.resetUrl();
 
     setTimeout(() => {
-      testGroup.resetUrl();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The params state receives changed data', done => {
-    testGroup.initialize();
+    testGroup.params.set({id: 1, type: 'old'});
 
     setTimeout(() => {
-      testGroup.params.set({id: 1, type: 'old'});
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 1, type: 'old'});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 1, type: 'old'});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 
   it('The params state resets to initial data', done => {
-    testGroup.initialize();
+    testGroup.params.reset();
 
     setTimeout(() => {
-      testGroup.params.reset();
-
-      setTimeout(() => {
-        testGroup.params.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.queryParams.tap(data => {
-          expect(data).toEqual({});
-        });
-
-        testGroup.allParams.tap(data => {
-          expect(data).toEqual({id: 0, type: 'all'});
-        });
-
-        testGroup.fragment.tap(data => {
-          expect(data).toBe(null);
-        });
-
-        done();
+      testGroup.params.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
       });
+
+      testGroup.queryParams.tap(data => {
+        expect(data).toEqual({});
+      });
+
+      testGroup.allParams.tap(data => {
+        expect(data).toEqual({id: 0, type: 'all'});
+      });
+
+      testGroup.fragment.tap(data => {
+        expect(data).toBe(null);
+      });
+
+      done();
     });
   });
 });
