@@ -15,43 +15,76 @@ management and lifecycle control of related reactive sources.
 
 ## Key Components
 
-1. **Reactive Store (@bitfiber/ng/rx)**  
-   An Angular-specific extension of [@bitfiber/rx](https://github.com/bitfiber/rx), designed to enhance reactive state management
-   within Angular applications. It adds several powerful features, including:  
-   `NgStore`: Extends the base store for improved integration with Angular’s service lifecycle.  
-   `Signal State`: Manages reactive data that can be used like Angular signals.  
-   `Async Signal Group`: Manages asynchronous workflows and stores their state in the signal state.  
-   `Route Group`: Provides reactive management of route params, query params, and fragments.  
-   `Route Filters Group`: Manages route-based filters as the signal state, ensuring synchronization
-   with the route.  
-   `Form Source`: Integrates Angular form controls with states, ensuring seamless synchronization
-   between form data and state.
+1. **NgStore**  
+   Extends the base store for improved integration with Angular’s service lifecycle.
+
+
+2. **Signal State**  
+   Manages reactive data that can be used like Angular signals.
+
+
+3. **Async Signal Group**  
+   Manages asynchronous workflows and stores their state in the signal state.
+
+
+4. **Route Group**  
+   Provides reactive management of route params, query params, and fragments.
+
+
+5. **Route Filters Group**  
+   Manages route-based filters as the signal state, ensuring synchronization with the route.
+
+
+6. **Form Source**  
+   Integrates Angular form controls with states, ensuring seamless synchronization between
+   form data and state.
 
 ---
 
 ## Key Features
 
 1. **Integration with RxJS**  
-   Since `@bitfiber/ng/rx` is built on top of RxJS, it integrates seamlessly with the RxJS
-   ecosystem. Emitters and states can easily interact with observables and subjects, and you can
-   leverage all RxJS operators (e.g., map, filter, debounce, etc.) in various methods. The library
-   simplifies handling reactive streams, allowing you to focus on logic without worrying about
-   manual subscription and completion management.
+   Since `@bitfiber/ng/rx` is built on top of RxJS, it integrates smoothly with the RxJS ecosystem.
+   Emitters and states can easily interact with observables and subjects, and can also create
+   effects using RxJS operators.
 
 
-2. **Angular Integration**  
+2. **Signal Integration**  
    Designed specifically for Angular, `@bitfiber/ng/rx` integrates with Angular's signals.
-   Signal states can be used in Angular’s reactive constructs like `effect`, `computed`, and
-   other places where signals are typically used, providing seamless reactivity with the UI.
+   Signal states can be used within Angular’s reactive constructs like `effect`, `computed`,
+   and other areas where signals are commonly used, ensuring seamless reactivity with the UI.
 
 
-3. **Routing and Form Handling**  
-   The `Route Group` and `Route Filters Group` provide reactive management of route params and
-   filters. The `Form Source` feature connects Angular forms to state, ensuring form controls are
-   always synchronized with the application state.
+3. **Route Management**  
+   The `Route Group` and `Route Filters Group` provide reactive management of route params
+   and filters.
 
 
-4. **Strict Typing**  
+4. **Form Synchronization**  
+   The `Form Source` feature synchronizes Angular forms with state, ensuring that form controls
+   remain in sync with application state.
+
+
+5. **Stream Connections**  
+   Easily connects multiple emitters, states, and observables to each other.
+
+
+6. **Readable Code Structure**  
+   Produces clear, traceable code, making connections between emitters, states, and
+   observables easy to follow.
+
+
+7. **Automatic Subscription Management**  
+   Simplifies handling reactive streams, freeing you from managing manual subscriptions
+   and completions.
+
+
+8. **Synchronization with Data Sources**  
+   States can synchronize with data sources like local storage, cookies, and
+   other external data sources.
+
+
+9. **Strict Typing**  
    The library leverages TypeScript to enforce strict typing, ensuring robust type checking
    at compile time. This reduces the likelihood of runtime errors and enhances code reliability.
    TypeScript's powerful type inference also makes it easier to write cleaner, more maintainable code,
@@ -59,11 +92,11 @@ management and lifecycle control of related reactive sources.
    components.
 
 
-5. **Tree Shaking**  
-   The modular design of `@bitfiber/ng` enables tree shaking, allowing developers to optimize
-   bundle sizes by importing only the required functionalities. This eliminates unused code from
-   the final build, leading to smaller, more efficient applications, which is particularly useful
-   for performance-sensitive environments.
+10. **Tree Shaking**  
+    The modular design of `@bitfiber/ng` enables tree shaking, allowing developers to optimize
+    bundle sizes by importing only the required functionalities. This eliminates unused code from
+    the final build, leading to smaller, more efficient applications, which is particularly useful
+    for performance-sensitive environments.
 
 ---
 
@@ -143,10 +176,10 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 ## Store
 
 ---
+<a id="id-ng-store"></a>
 
 ### `@class NgStore`
 
-<a id="id-ng-store"></a>
 Extends `Store (@bitfiber/rx)` and provides functionality for managing store items such as
 emitters, states, and groups within an Angular context.
 
@@ -380,10 +413,10 @@ export class ProductsComponent {
 ```
 
 ---
+<a id="id-signal-state-fn"></a>
 
 ### `@function signalState<T>`
 
-<a id="id-signal-state-fn"></a>
 Creates the signal state that combines the functionality of both the `SignalState` class
 and the `Signal` interface, initialized with the provided `initialValue`.
 
@@ -474,6 +507,11 @@ const result2 = signalState<[number, number]>([0, 0], s => s
     console.log(range);
   }));
 
+// Creates a state that records the timestamp of the last received ID
+const lastIdTime = signalState<number | null>(null, s => s
+  // Waits for the first value from the `lastId` state, then completes the stream
+  .wait(lastId, lastId => new Date().getTime()));
+
 // Demonstrates the usage of signal states within Angular's `computed` function
 const results = computed(() => result1().concat(result2()));
 
@@ -507,10 +545,10 @@ group.complete();
 ```
 
 ---
+<a id="id-signal-state"></a>
 
 ### `@class SignalState<T>`
 
-<a id="id-signal-state"></a>
 Represents a signal state in a reactive store, extending the functionality of `AbstractState`.
 This class encapsulates the logic for updating, resetting and maintaining a state,
 reacting to changes, and notifying subscribers whenever the state is updated.
@@ -751,9 +789,8 @@ const data = signalState<number>(0, s => s
 ---
 
 `@method select<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this state.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this state.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -761,10 +798,9 @@ Subsequent emissions occur whenever any of the sources emit a new value,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'combineLatest' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values from
+each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current state, allowing for method chaining
 
@@ -790,9 +826,8 @@ const result = signalState<Result>({launchId: 0, data: '', count: 0}, s => s
 ---
 
 `@method zip<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this state.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this state.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -800,10 +835,9 @@ Subsequent emissions occur only when all sources emit new values,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'zip' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values from
+each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current state, allowing for method chaining
 
@@ -824,6 +858,34 @@ const result = signalState<Result>({launchId: 0, data: '', count: 0}, s => s
   .zip(launch, data, count$, (launchId, data, count) => {
     launchId, data, count
   }));
+```
+
+---
+
+`wait<I extends any[]>(...data): this`  
+Waits for the first values from multiple emitters, states, or observables, applies a reducer
+function to these values, emits the resulting value to all subscribers of this state,
+and completes the stream
+
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the first values from
+each source as arguments and returns the value to be emitted
+
+`@returns this` the instance of the current emitter, allowing for method chaining
+
+```ts
+import {of} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const launch = emitter<number>();
+const data = signalState<string>(1);
+const count$ = of(1);
+
+const result = signalState<number>(0, s => s
+  // Waits the first values from all reactive sources, emits the reducer function value to
+  // the state subscribers, and completes the stream
+  .wait(launch, data, count$, (launch, data, count) => count));
 ```
 
 ---
@@ -1028,10 +1090,10 @@ const log = signalState<number>(0, s => s
 ```
 
 ---
+<a id="id-async-signal-group-fn"></a>
 
 ### `@function asyncSignalGroup<L, S, F>`
 
-<a id="id-async-signal-group-fn"></a>
 Creates a new `AsyncSignalGroup` instance that manages the lifecycle of an asynchronous action,
 including emitters for launching the action, handling its success, dealing with failures,
 and maintaining the signal state of the asynchronous action.
@@ -1129,10 +1191,10 @@ group.complete();
 ```
 
 ---
+<a id="id-async-signal-group"></a>
 
 ### `@class AsyncSignalGroup<L, S, F>`
 
-<a id="id-async-signal-group"></a>
 Represents an asynchronous group that manages the lifecycle of an asynchronous action,
 including emitters for launching the action, handling its success, dealing with failures,
 and maintaining the signal state of the asynchronous action.
@@ -1268,10 +1330,10 @@ const group = asyncSignalGroup<number, string[], Error>(group => {
 ```
 
 ---
+<a id="id-route-group-fn"></a>
 
 ### `@function routeGroup<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-group-fn"></a>
 Creates a new `RouteGroup` instance that facilitates the reactive management of Angular's
 route data, including params, query params, and the fragment, within the current route.
 
@@ -1380,10 +1442,10 @@ route.complete();
 ```
 
 ---
+<a id="id-route-group"></a>
 
 ### `@class RouteGroup<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-group"></a>
 Represents a route group that facilitates the reactive management of Angular's route data,
 including params, query params, and the fragment, within the current route.
 
@@ -1612,10 +1674,10 @@ if (route.hasFragment()) {
 ```
 
 ---
+<a id="id-route-group-settings"></a>
 
 ### `@interface RouteGroupSettings<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-group-settings"></a>
 Defines the settings for configuring a `RouteGroup`  
 `@template Q` - The type representing the query params of the route  
 `@template P` - The type representing the params of the route
@@ -1654,10 +1716,10 @@ Additional options for configuring the Angular navigation behavior.
 These extras correspond to Angular's `NavigationExtras` interface
 
 ---
+<a id="id-route-filters-group-fn"></a>
 
 ### `@function routeFiltersGroup<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-filters-group-fn"></a>
 Creates a new `RouteFiltersGroup` instance that facilitates the reactive management of Angular's
 form-based filters and links these filters with the route.
 
@@ -1785,10 +1847,10 @@ export class ProductsComponent {
 ```
 
 ---
+<a id="id-route-filters-group"></a>
 
 ### `@class RouteFiltersGroup<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-filters-group"></a>
 Represents a route filters group that facilitates the reactive management of Angular's
 form-based filters and links these filters with the route.
 
@@ -1887,10 +1949,10 @@ routeFilters.complete();
 ```
 
 ---
+<a id="id-route-filters-group-settings"></a>
 
 ### `@interface RouteFiltersGroupSettings<Q extends Index = object, P extends Index = object>`
 
-<a id="id-route-filters-group-settings"></a>
 Defines the settings for configuring a `RouteFiltersGroup`, which manages the synchronization
 between form-based filters and the current route's query and route parameters.
 
@@ -1933,10 +1995,10 @@ When set to `true`, filter changes are applied without updating the route params
 Defaults to `false`, meaning changes are reflected in the route by default
 
 ---
+<a id="id-form-source-fn"></a>
 
 ### `@function formSource<T>`
 
-<a id="id-form-source-fn"></a>
 Creates an instance of `FormSource`, which provides streamlined access to the data
 in an Angular form. It can handle any instance of `AbstractControl`, such as `FormControl`,
 `FormGroup`, or `FormArray`
@@ -1987,10 +2049,10 @@ const productsReq = emitter<FormValue>(e => e
 ```
 
 ---
+<a id="id-form-source"></a>
 
 ### `@class FormSource<T>`
 
-<a id="id-form-source"></a>
 Implements the `DataSource` interface, providing a way to interact with the data
 stored in an Angular form. This class offers functionality to retrieve, set, observe,
 and remove data from any `AbstractControl`, including `FormControl`, `FormGroup`, and `FormArray`
