@@ -1,7 +1,7 @@
 {
   "name": "@bitfiber/ng",
   "description": "Reactive State and Async Workflow Management Library for Angular",
-  "version": "18.1.0",
+  "version": "18.2.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "@angular/forms": "^18.0.0",
     "@angular/router": "^18.0.0",
     "@bitfiber/utils": "^1.1.1",
-    "@bitfiber/rx": "^1.1.0"
+    "@bitfiber/rx": "^1.2.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
