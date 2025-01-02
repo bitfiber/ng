@@ -7,5 +7,6 @@
     "declarationMap": true,
     "inlineSources": true
   },
+  "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts"]
 }
