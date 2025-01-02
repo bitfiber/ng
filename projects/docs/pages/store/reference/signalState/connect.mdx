@@ -1,0 +1,38 @@
+import {Badge} from '../../../../';
+
+# connect <Badge type={'method'}>Method</Badge>
+
+Connects the state to an external data source `DataSource`, which provides the data
+that the state will manage and emit. By connecting to a data source, the state can synchronize
+with external data, ensuring it remains consistent with the source. This is useful in scenarios
+where the state needs to reflect or react to data from an external provider.
+
+Once connected, the state automatically updates from the data source whenever the source changes,
+and conversely, updates the data source whenever the state value is changed. This bidirectional
+synchronization ensures that both the state and the data source remain in sync
+
+`@param source: DataSource<T> {:ts}`  
+The external data source to connect to the state
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+connect(source: DataSource<T>): this;
+```
+
+## Example
+
+```ts copy
+import {localStoragePart} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const theme = signalState<'dark' | 'light'>('dark', s => s
+  // Connects the state with the local storage data stored under the key 'theme'.
+  // Now, if you change the state, local storage will also be updated.
+  // Conversely, if the local storage changes, the state will be updated.
+  // Ensures two-way synchronization between the state and the 'theme' data in local storage
+  .connect(localStoragePart('theme')));
+```

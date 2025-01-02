@@ -1,0 +1,44 @@
+import {Badge} from '../../../../';
+
+# complete <Badge type={'method'}>Method</Badge>
+
+Completes the store and all of its items, signaling that the store has finished
+its operations and is now in a completed state. Once the store is completed,
+no further changes or updates will be made to it or its items.
+This method is called automatically when the associated component or service is destroyed
+
+## API
+
+```ts copy
+complete(): void;
+```
+
+## Example
+
+```ts copy
+import {Injectable} from '@angular/core';
+import {signalState, NgStore} from '@bitfiber/ng/rx';
+
+@Injectable()
+class ProductsStore extends NgStore {
+  products = signalState<any[]>();
+  #ready = this.markAsReady();
+}
+```
+
+```ts copy
+import {Component, inject} from '@angular/core';
+
+@Component({
+  selector: 'bf-products',
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore).initialize();
+  
+  complete(): void {
+    // Completes the store
+    this.store.complete();
+  }
+}
+```

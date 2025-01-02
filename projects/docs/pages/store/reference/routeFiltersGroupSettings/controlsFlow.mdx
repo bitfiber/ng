@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# controlsFlow <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A function that redefines the base flow of control values and returns an observable
+that emits the form values as a partial object containing both query and route params
+
+`@param form: FormGroup<FilterControls<Q & P>> {:ts}`  
+The form group containing the filter controls
+
+## API
+
+```ts copy
+controlsFlow?: (form: FormGroup<FilterControls<Q & P>>) => Observable<Partial<Q & P>>;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+  // Configures a custom data flow for form controls
+  controlsFlow: form => form.valueChanges,
+});
+```

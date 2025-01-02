@@ -1,0 +1,40 @@
+import {Badge} from '../../../';
+
+# RouteGroupSettings <Badge type={'interface'}>Interface</Badge>
+
+Defines the settings for configuring a [RouteGroup](/store/reference/routeGroup)
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+## API
+
+```ts copy
+interface RouteGroupSettings<Q extends Index = object, P extends Index = object> {
+  initialParams?: P;
+  initialQueryParams?: Q;
+  excludedParams?: (keyof (Q & P))[];
+  segments?: (params: Record<keyof P, string>) => string[];
+  hasFragment?: boolean;
+  navigationExtras?: NavigationExtras;
+}
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group configured with specific settings
+const route = routeGroup<{page: number; search: string}, {id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {search: '', page: 1},
+  excludedParams: ['page'],
+  segments: params => [params.type, params.id],
+  hasFragment: true,
+  navigationExtras: {},
+});
+```

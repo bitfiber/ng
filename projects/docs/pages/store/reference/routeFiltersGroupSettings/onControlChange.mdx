@@ -1,0 +1,40 @@
+import {Badge} from '../../../../';
+
+# onControlChange <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A callback function that is triggered whenever a control's value changes in the base
+control flow. This function provides access to the form, the name of the control that changed,
+and the new control data. It can be used to apply additional logic or side effects
+when form controls are updated
+
+`@param form: FormGroup<FilterControls<Q & P>> {:ts}`  
+The form group containing the filter controls
+
+`@param controlName: keyof (Q & P) {:ts}`  
+The name of the control that triggered the change
+
+`@param data: Partial<Q & P> {:ts}`  
+The new control data
+
+## API
+
+```ts copy
+onControlChange?: (
+  form: FormGroup<FilterControls<Q & P>>,
+  controlName: keyof (Q & P),
+  data: Partial<Q & P>,
+) => void;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+  // Resets the page filter to 1 when any other filter changes
+  onControlChange: ({controls}, key) => (key !== 'page' && controls.page?.setValue(1)),
+});
+```

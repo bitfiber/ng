@@ -1,0 +1,29 @@
+import {Badge} from '../../../../';
+
+# reset <Badge type={'method'}>Method</Badge>
+
+Resets the state to its original value that was set during initialization.
+This is useful for reverting the state back to its starting condition, discarding any changes
+that have occurred since the state was first established
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+reset(): this;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(10);
+
+data.set(20);
+
+// Resets the current state to initial value '10'
+data.reset();
+```

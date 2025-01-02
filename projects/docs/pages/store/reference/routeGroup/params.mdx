@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# params <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+A signal state that represents the route params
+
+## API
+
+```ts copy
+readonly params: SignalStateType<P>;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a group of signal states for managing the route
+const route = routeGroup<null, {id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+}, ({params}) => {
+  params
+    // Performs a tap callback each time the route params change
+    .tap(data => console.log(data));
+});
+```

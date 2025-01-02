@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# hasAnyParams <Badge type={'method'}>Method</Badge>
+
+Determines whether the current route has defined params or query params
+
+## API
+
+```ts copy
+hasAnyParams(): boolean;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Creates a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+});
+
+if (route.hasAnyParams()) {
+  // Some logic
+}
+```

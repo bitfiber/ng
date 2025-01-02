@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# useLazyEmission <Badge type={'method'}>Method</Badge>
+
+Enables lazy emission for the state, meaning that the state will defer emitting its initial value
+to subscribers until an explicit trigger occurs. This can be useful in scenarios where you want
+more control over when the state emits its value, rather than emitting immediately
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+useLazyEmission(): this;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(0, s => s
+  // Forces the state not to emit a value at the time of subscription
+  .useLazyEmission());
+```

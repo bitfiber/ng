@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# filters <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+A signal state that represents the combined filter values from both the query and route params,
+and is synchronized with the form controls. This signal state can be used in Angular's
+reactive constructs such as `effect` or `computed` functions
+
+## API
+
+```ts copy
+readonly filters: SignalStateType<Q & P>;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+}, ({filters}) => {
+  filters
+    // Executes a tap callback whenever the route params or form values change
+    .tap(data => console.log(data));
+});
+```

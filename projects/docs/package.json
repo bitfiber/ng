@@ -1,0 +1,17 @@
+{
+  "name": "@bitfiber/ng-docs",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start:dev": "next",
+    "start:prod": "cross-env NODE_ENV=local_prod npm run build & npx serve@latest .\\dist\\"
+  },
+  "peerDependencies": {
+    "next": "~15.1.0",
+    "nextra": "~3.3.0",
+    "nextra-theme-docs": "~3.3.0",
+    "react": "~18.3.0",
+    "react-dom": "~18.3.0"
+  }
+}

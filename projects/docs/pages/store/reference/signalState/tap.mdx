@@ -1,0 +1,66 @@
+import {Badge} from '../../../../';
+
+# tap <Badge type={'method'}>Method</Badge>
+
+## Overload 1
+
+Creates a new stream with a side effect, similar to the RxJS `tap` operator.
+
+This method allows you to perform actions or side effects whenever the state emits a value,
+without altering the value itself. It is useful for tasks like logging, debugging,
+or triggering external operations in response to emitted values
+
+`@param observer: Partial<Observer<T>> {:ts}`  
+A partial observer with lifecycle methods (`next`, `error`, `complete`)
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+tap(observer: Partial<Observer<T>>): this;
+```
+
+### Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const log = signalState<number>(0, s => s
+  // Performs a tap callback each time the state emits new data
+  .tap({
+    next: id => console.log(id),
+    error: error => console.log(error),
+  }));
+```
+
+## Overload 2
+
+Creates a new stream with a side effect, similar to the RxJS `tap` operator.
+
+This method allows you to perform actions or side effects whenever the state emits a value,
+without altering the value itself. It is useful for tasks like logging, debugging,
+or triggering external operations in response to emitted values
+
+`@param next: (value: T) => void {:ts}`  
+A function that takes the emitted value and performs a side effect
+
+`@returns this {:ts}`  
+The instance of the current state, allowing for method chaining
+
+### API
+
+```ts copy
+tap(next: (value: T) => void): this;
+```
+
+### Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const log = signalState<number>(0, s => s
+  // Performs a tap callback each time the state emits new data
+  .tap(id => console.log(id)));
+```

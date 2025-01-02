@@ -1,0 +1,55 @@
+import {Badge, RxLink} from '../../../';
+
+# SignalState <Badge type={'class'}>Class</Badge>
+
+Represents a core data container in the reactive store, responsible for maintaining and
+broadcasting data updates to multiple subscribers. Like emitters, the state can create and manage
+reactive streams to broadcast changes efficiently. It is designed to simplify state
+propagation and synchronization across stores or features, ensuring consistency. The state can
+also integrate seamlessly with other reactive sources like emitters, states, and observables.
+
+The signal state provides the same functionality as the <RxLink href="store/reference/state">State</RxLink>.
+Additionally, it behaves like an Angular signal, enabling its use in Angular's `effect` and
+`computed` functions, as well as in other contexts where signals are typically used
+
+`@template T {:ts}`  
+The type of data managed and emitted by the state
+
+## API
+
+```ts copy
+class SignalState<T> extends AbstractState<T> {
+  readonly $: Observable<T>;
+  initialize(): this;
+  complete(): void;
+  manage(...operators: OperatorFunction<T, T>[]): this;
+  get(): T;
+  set(value: T): this;
+  update(updater: (state: T) => T): this;
+  reset(): this;
+  compareBy(comparison: Comparison): this;
+  connect(source: DataSource<T>): this;
+  useLazyEmission(): this;
+  useLazyEmissionOnce(): this;
+  select<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  zip<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  wait<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  receive(...inputs: EmitterOrObservable<T>[]): this;
+  receive<I>(input: EmitterOrObservable<I>, reducer: (value: I, state: T) => T): this;
+  transmit(...outputs: (EmitterOrSubject<T> | EmitterOrSubject<void>)[]): this;
+  transmit<O>(output: AbstractState<O>, reducer: (value: T, state: O) => O): this;
+  transmit<O>(output: EmitterOrSubject<O>, reducer: (value: T) => O): this;
+  effect(...operators: OperatorFunction<any, any>[]): this;
+  tap(observer: Partial<Observer<T>>): this;
+  tap(next: (value: T) => void): this;
+}
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+// Creates a state
+const counter = signalState<number>(1);
+```

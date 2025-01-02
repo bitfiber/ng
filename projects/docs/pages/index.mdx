@@ -1,0 +1,103 @@
+import {RxLink} from '../';
+
+# @bitfiber/ng/rx - Reactive State and Async Dataflow Management Library for Angular
+
+`@bitfiber/ng/rx` is an Angular-specific extension of <RxLink href="">@bitfiber/rx</RxLink>,
+designed to implement reactive state management and asynchronous dataflow in Angular applications.
+It provides a structured approach to managing complex data flows using emitters, states, groups,
+and stores, ensuring seamless integration of reactive sources like emitters, states, and
+observables.
+
+## Key Components
+
+1. ### [NgStore](/store)
+
+The NgStore is a foundational component for implementing reactive state management and
+handling asynchronous data flow in modules or entire applications. It serves as a central hub,
+organizing and managing store items like emitters, states, and groups, ensuring seamless
+interaction among them.
+
+2. ### [Emitters](/store/emitters)
+
+Emitters are fundamental units of communication in the reactive store. They enable straightforward
+creation and management of reactive streams, integrating seamlessly with other reactive sources
+like emitters, states, and observables. This integration allows you to build complex networks of
+streams and effectively manage reactive data flows.
+
+3. ### [Signal States](/store/states)
+
+Signal states are the core data containers in the reactive store, responsible for maintaining and
+broadcasting data updates to multiple subscribers. Like emitters, states can create and manage
+reactive streams to broadcast changes efficiently. They are designed to simplify state
+propagation and synchronization across stores or features, ensuring consistency. States can also
+integrate seamlessly with other reactive sources like emitters, states, and observables.
+
+4. ### [Groups](/store/groups)
+
+Groups are collections of emitters, states, and other groups that are unified under a specific
+feature. They help organize related reactive sources into a cohesive structure, ensuring proper
+initialization and completion of all items as a single unit.
+
+5. ### [Data Sources](/store/sources)
+
+Data sources act as facades for specific parts of data in external storages like local storage,
+session storage, cookies, and more. They implement a unified interface called DataSource,
+which simplifies integration with various storage mechanisms. This interface also enables states to
+seamlessly connect to external storages, ensuring that state remains synchronized with them.
+
+## Key Features
+
+1. **Integration with RxJS**  
+Since `@bitfiber/ng/rx` is built on top of RxJS, it integrates smoothly with the RxJS ecosystem.
+Emitters and states can easily interact with observables and subjects, and can also create
+effects using RxJS operators.
+
+
+2. **Signal Integration**  
+Designed specifically for Angular, `@bitfiber/ng/rx` integrates with Angular's signals.
+Signal states can be used within Angular’s reactive constructs like `effect`, `computed`,
+and other areas where signals are commonly used, ensuring seamless reactivity with the UI.
+
+
+3. **Route Management**  
+The [Route Group](/store/reference/routeGroupFn) and [Route Filters Group](/store/reference/routeFiltersGroupFn)
+provide reactive management of route params and filters.
+
+
+4. **Form Synchronization**  
+The [Form Source](/store/reference/formSourceFn) feature synchronizes Angular forms with state,
+ensuring that form controls remain in sync with application state.
+
+
+5. **Stream Connections**  
+Easily connects multiple emitters, states, and observables to each other.
+
+
+6. **Readable Code Structure**  
+Produces clear, traceable code, making connections between emitters, states, and
+observables easy to follow.
+
+
+7. **Automatic Subscription Management**  
+Simplifies handling reactive streams, freeing you from managing manual subscriptions
+and completions.
+
+
+8. **Synchronization with Data Sources**  
+States can synchronize with data sources like local storage, cookies, and
+other external data sources.
+
+
+9. **Strict Typing**  
+The library leverages TypeScript to enforce strict typing, ensuring robust type checking
+at compile time. This reduces the likelihood of runtime errors and enhances code reliability.
+TypeScript's powerful type inference also makes it easier to write cleaner, more maintainable code,
+providing developers with strong guarantees about the structure and behavior of their reactive
+components.
+
+
+10. **Tree Shaking**  
+The modular design of `@bitfiber/ng/rx` enables tree shaking, allowing developers to optimize
+bundle sizes by importing only the required functionalities. This eliminates unused code from
+the final build, leading to smaller, more efficient applications, which is particularly useful
+for performance-sensitive environments.

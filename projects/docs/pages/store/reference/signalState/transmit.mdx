@@ -1,0 +1,105 @@
+import {Badge} from '../../../../';
+
+# transmit <Badge type={'method'}>Method</Badge>
+
+## Overload 1
+
+Transmits values from the current state to one or more other emitters, states, or subjects.
+It enables the propagation of data or events across multiple sources, effectively creating
+a network of interconnected reactive sources
+
+`@param ...outputs: (EmitterOrSubject<T> | EmitterOrSubject<void>)[] {:ts}`  
+One or more emitters, states, or subjects that will receive the transmitted values from this state
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+transmit(...outputs: (EmitterOrSubject<T> | EmitterOrSubject<void>)[]): this;
+```
+
+### Example
+
+```ts copy
+import {Subject} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const receiver1 = emitter<number>();
+const receiver2 = signalState<number>(0);
+const receiver3 = new Subject<number>();
+
+const source = signalState<number>(0, s => s
+  // Transmits every emitted value to all reactive sources for further processing or handling
+  .transmit(receiver1, receiver2, receiver3));
+```
+
+## Overload 2
+
+Transmits values from the current state to another state. By using a reducer function,
+the emitted values can be transformed or customized to match the expected format of another state
+
+`@param output: AbstractState<O> {:ts}`  
+A state that will receive the transmitted values from this state
+
+`@param reducer: (value: T, state: O) => O {:ts}`  
+A function that converts or transforms the emitted value from this state type to the type expected
+by another state
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+transmit<O>(output: AbstractState<O>, reducer: (value: T, state: O) => O): this;
+```
+
+### Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const receiver = signalState<number>(0);
+
+const source = signalState<string>(0, s => s
+  // Transmits every emitted value to another state for further processing or handling
+  .transmit(receiver, (value, state) => state + Number(value)));
+```
+
+## Overload 3
+
+Transmits values from the current state to another emitter or subject.
+By using a reducer function, the emitted values can be transformed or customized to match
+the expected format of the target emitter or subject
+
+`@param output: EmitterOrSubject<O> {:ts}`  
+An emitter or subject that will receive the transmitted values from this state
+
+`@param reducer: (value: T) => O {:ts}`  
+A function that converts or transforms the emitted value from the current state's type to the type
+expected by the receiving emitter or subject
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+transmit<O>(output: EmitterOrSubject<O>, reducer: (value: T) => O): this;
+```
+
+### Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const receiver = emitter<number>();
+
+const source = signalState<string>(0, s => s
+  // Transmits every emitted value to another emitter for further processing or handling
+  .transmit(receiver, value => Number(value)));
+```

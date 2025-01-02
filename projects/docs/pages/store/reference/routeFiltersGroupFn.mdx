@@ -1,0 +1,130 @@
+import {Badge} from '../../../';
+
+# routeFiltersGroup <Badge type={'function'}>Function</Badge>
+
+Creates a new [RouteFiltersGroup](/store/reference/routeFiltersGroup) instance that facilitates
+the reactive management of Angular's form-based filters and links these filters with the route.
+
+The `RouteFiltersGroup` class allows for managing form filters as reactive state that
+is synchronized with the current route's query and route params. The filters are
+represented as signal state, making it usable in Angular's reactive constructs such as
+`effect` or `computed` functions, and other places where signals are typically used.
+
+The properties of the generic types `Q` and `P` can be any type because, before being set to
+the route, they are converted to strings using `JSON.stringify`. When filters receive parameters
+from the route, they are converted back to their respective types using `JSON.parse`.
+
+This function also allows for an optional `onInit` callback, which can be used to perform
+additional setup or configuration just before the group initialization
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+`@param settings: RouteFiltersGroupSettings<Q, P> {:ts}`  
+The settings for configuring a `RouteFiltersGroup`
+
+`@param onInit?: (group: RouteFiltersGroup<Q, P>, sameGroup: RouteFiltersGroup<Q, P>) => void {:ts}`  
+An optional callback function executed just before the group initialization
+
+`@returns RouteFiltersGroup<Q, P> {:ts}`
+
+See also: [RouteFiltersGroupSettings](/store/reference/routeFiltersGroupSettings)
+
+## API
+
+```ts copy
+function routeFiltersGroup<Q extends Index = object, P extends Index = object>(
+  settings: RouteFiltersGroupSettings<Q, P>,
+  onInit?: (group: RouteFiltersGroup<Q, P>, sameGroup: RouteFiltersGroup<Q, P>) => void,
+): RouteFiltersGroup<Q, P>;
+```
+
+## Example
+
+```ts copy filename="products.store.ts"
+import {computed, Injectable} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {asyncSignalGroup, routeFiltersGroup, signalState, NgStore} from '@bitfiber/ng/rx';
+
+interface ProductsFilters {
+  search: string;
+  page: number;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  products: Product[];
+}
+
+@Injectable()
+class ProductsStore extends NgStore {
+  // Synchronizes the filters state with the route and the filters form
+  routeFilters = routeFiltersGroup<ProductsFilters>({
+    initialQueryParams: {search: '', page: 1},
+  });
+
+  // Provides an async group for managing products loading process
+  productsReq = asyncSignalGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      // Reloads products when filters are updated
+      .receive(this.routeFilters.filters)
+      // Defines a side effect for loading products
+      .effect(switchMap(filters => productsService.get(filters).pipe(transmit(productsReq))));
+  }, []);
+
+  // Provides the loading status state
+  isLoading = computed(() => this.productsReq.state().inProgress);
+
+  // Provides the main store state
+  data = signalState<ProductsState>({products: []}, s => s
+    // Updates the state when the products request succeeds
+    .receive(this.productsReq.success, products => ({products})),
+  );
+}
+```
+
+```ts copy filename="products.component.ts"
+import {Component, inject} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'bf-products',
+  standalone: true,
+  templateUrl: './products.component.html',
+  imports: [ReactiveFormsModule],
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore).initialize();
+  readonly form = this.store.routeFilters.form;
+}
+```
+
+```angular-html copy filename="products.component.html"
+@if (store.isLoading()) {
+  <div
+    class="bf-filters"
+    [formGroup]="form"
+  >
+    <input formControlName="search"/>
+    <pagenator formControlName="page"/>
+  </div>
+
+  @for (product of store.data().products) {
+    <div class="bf-product">
+      {{product.name}}
+    </div>
+  }
+} @else {
+  Data is loading...
+}
+```

@@ -1,0 +1,31 @@
+import {Badge} from '../../../../';
+
+# markAsReady <Badge type={'method'}>Method</Badge> <Badge type={'modifier'}>Protected</Badge>
+
+Marks the store as ready, indicating that all store items, such as emitters, states, and groups,
+have been defined.  
+This method must be called after all store items are defined!
+
+## API
+
+```ts copy
+protected markAsReady(): void;
+```
+
+## Example
+
+```ts copy
+import {Injectable} from '@angular/core';
+import {emitter, state} from '@bitfiber/rx';
+import {NgStore} from '@bitfiber/ng/rx';
+
+@Injectable()
+class Store extends NgStore {
+  event = emitter<string>();
+  counter = state<number>(0);
+  
+  // Marks the store as ready, indicating that all store items, such as emitters, states,
+  // and groups, have been defined
+  #ready = this.markAsReady();
+}
+```

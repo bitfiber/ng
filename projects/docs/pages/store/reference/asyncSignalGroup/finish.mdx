@@ -1,0 +1,37 @@
+import {Badge} from '../../../../';
+
+# finish <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An emitter that triggers when the asynchronous action's entire lifecycle is completed,
+whether it ends in success or failure. This emitter does not carry any payload (`void`),
+as it simply serves as a notification that the process is fully complete
+
+## API
+
+```ts copy
+readonly finish: Emitter<void>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {asyncSignalGroup} from '@bitfiber/ng/rx';
+
+// Creates an asynchronous group
+const group = asyncSignalGroup<number, string[], Error>((group, {launch, finish}) => {
+  launch
+    // Sets an effect to be triggered on new launch emissions
+    .effect(
+      switchMap(page => apiService.get(`api/get?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+
+  finish
+    // Performs a tap callback each time the request either fails or succeeds
+    .tap(() => console.log('Request has been finished'));
+});
+```

@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# resetUrl <Badge type={'method'}>Method</Badge>
+
+Resets the current URL to the initial values of the route params, query params, and fragment
+
+## API
+
+```ts copy
+resetUrl(): void;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Creates a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+});
+
+// Initializes the group and all items within the group
+route.initialize();
+
+// Resets all states, such as the route params, query params and fragment to their initial values
+route.resetUrl();
+```

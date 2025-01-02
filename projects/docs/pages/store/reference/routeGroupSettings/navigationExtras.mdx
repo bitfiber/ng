@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# navigationExtras <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Additional options for configuring the Angular navigation behavior.
+These extras correspond to Angular's `NavigationExtras` interface
+
+## API
+
+```ts copy
+navigationExtras?: NavigationExtras;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  // Provides additional settings for configuring the Angular router
+  navigationExtras: {},
+});
+```

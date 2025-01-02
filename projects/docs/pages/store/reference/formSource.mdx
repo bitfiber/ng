@@ -1,0 +1,51 @@
+import {Badge, RxLink} from '../../../';
+
+# FormSource <Badge type={'class'}>Class</Badge>
+
+Implements the <RxLink href="sources/reference/dataSource">DataSource</RxLink> interface,
+providing a way to interact with the data stored in Angular form. This class offers functionality
+to retrieve, set, observe, and remove data from any `AbstractControl`, including `FormControl`,
+`FormGroup`, and `FormArray`
+
+`@template T {:ts}`  
+The type of data managed by the Angular form
+
+## API
+
+```ts copy
+class FormSource<T> implements DataSource<T> {
+  readonly $: Observable<T>;
+  get(): T;
+  set(value: T): void;
+  remove(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {FormControl, FormGroup} from '@angular/forms';
+import {formSource, signalState} from '@bitfiber/ng/rx'; 
+
+interface FormValue {
+  itemId: number;
+  search: string;
+}
+
+// Creates a form group
+const formGroup = new FormGroup({
+  itemId: new FormControl(1, {nonNullable: true}),
+  search: new FormControl('', {nonNullable: true}),
+});
+
+// Creates a form source
+const source = formSource<FormValue>(formGroup);
+
+// Creates a form state synchronized with the form
+const formState = signalState<FormValue>({itemId: 1, search: ''}, s => s
+  // Connects the state with the form group.
+  // Ensures two-way synchronization between the state and the form group:
+  // - Changing the state updates the form group.
+  // - Changing the form group updates the state.
+  .connect(source));
+```

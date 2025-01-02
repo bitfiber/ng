@@ -12,7 +12,7 @@ describe('@bitfiber/ng/rx/routeFiltersGroup/controlFlow', () => {
       initialParams: {id: 0, type: 'all'},
       initialQueryParams: {search: '', page: 1, groupId: null},
       segments: params => [params.type, params.id],
-      controlsFlow: (form => form.valueChanges),
+      controlsFlow: form => form.valueChanges,
       hasFragment: true,
     });
     testGroup = store.testGroup;

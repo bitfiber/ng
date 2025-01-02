@@ -1,0 +1,37 @@
+import {Badge} from '../../../../';
+
+# wait <Badge type={'method'}>Method</Badge>
+
+Waits for the first values from multiple emitters, states, or observables, applies a reducer
+function to these values, emits the resulting value to all subscribers of this state,
+and completes the stream
+
+`@param ...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>] {:ts}`  
+A spread of emitters, states, or observables, followed by a reducer function. The reducer function
+takes the first values from each source as arguments and returns the value to be emitted
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+wait<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+```
+
+## Example
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const launch = emitter<number>();
+const data = signalState<string>(1);
+const count$ = of(1);
+
+const result = signalState<number>(0, s => s
+  // Waits the first values from all reactive sources, emits the reducer function value to
+  // the state subscribers, and completes the stream
+  .wait(launch, data, count$, (launch, data, count) => count));
+```

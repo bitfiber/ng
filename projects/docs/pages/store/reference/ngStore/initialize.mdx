@@ -1,0 +1,61 @@
+import {Badge} from '../../../../';
+
+# initialize <Badge type={'method'}>Method</Badge>
+
+Initializes the store and all of its items, preparing it for use. Optionally, a `beforeInit`
+callback function can be provided, which will be executed before the store is initialized
+
+`@param beforeInit?: (store: this) => void {:ts}`  
+An optional callback function that runs before the store is initialized
+
+`@returns this {:ts}`  
+The current instance of the store, allowing for method chaining
+
+## API
+
+```ts copy
+initialize(beforeInit?: (store: this) => void): this;
+```
+
+## Example
+
+```ts copy
+import {Injectable} from '@angular/core';
+import {signalState, NgStore} from '@bitfiber/ng/rx';
+
+@Injectable()
+class ProductsStore extends NgStore {
+  products = signalState<any[]>();
+  #ready = this.markAsReady();
+}
+```
+
+```ts copy
+import {Component, inject} from '@angular/core';
+
+@Component({
+  selector: 'bf-products',
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore)
+    // Initializes the store
+    .initialize();
+}
+```
+
+```ts copy
+import {Component, inject} from '@angular/core';
+
+@Component({
+  selector: 'bf-products',
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore)
+    // Executes the provided callback and then initializes the store
+    .initialize(({products}) => {
+      products.tap(data => console.log(data));
+    });
+}
+```
