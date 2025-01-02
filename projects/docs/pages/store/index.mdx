@@ -1,0 +1,156 @@
+import {Callout} from 'nextra/components';
+import {RxLink} from '../../';
+
+# What is NgStore?
+
+The NgStore is an Angular-specific extension of the <RxLink href="store">Basic Store</RxLink>
+and serves as a foundational component for implementing reactive state management and handling
+asynchronous data flow in Angular applications. It serves as a central hub, organizing and
+managing store items like emitters, states, and groups, ensuring seamless interaction among them.
+
+<Callout
+  type="info"
+  emoji="ℹ️"
+>
+  For more detailed information about using stores, refer to
+  the <RxLink href="store">Basic Store Documentation</RxLink>.
+</Callout>
+
+## Creating a NgStore
+
+To create a store, define a new class that extends the [NgStore](/store/reference/ngStore) class.
+
+<Callout
+  type="warning"
+  emoji="⚠️"
+>
+  The store must be an Angular service or component because it relies on Angular's `DestroyRef`
+  for managing the store's completion.
+</Callout>
+
+```ts copy filename="products.store.ts"
+import {computed, Injectable} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {emitter, transmit} from '@bitfiber/rx';
+import {NgStore, asyncSignalGroup, routeFiltersGroup, signalState} from '@bitfiber/ng/rx';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductCategory {
+  id: number;
+  name: string;
+}
+
+interface ProductsFilters {
+  search: string;
+  page: number;
+}
+
+interface ProductsState {
+  categories: ProductCategory[];
+  products: Product[];
+}
+
+@Injectable()
+class ProductsStore extends NgStore {
+  // Provides the start of the first data loading process
+  start = emitter<void>();
+
+  // Provides the filters state that is synchronized with the route and the filters form
+  routeFilters = routeFiltersGroup<ProductsFilters>({
+    initialQueryParams: {search: '', page: 1},
+  }, ({filters}) => {
+    filters.useLazyEmission();
+  })
+
+  // Provides an async group for managing categories loading process
+  categoriesReq = asyncSignalGroup<void, ProductCategory[], Error>((categoriesReq, {launch}) => {
+    launch
+      // Triggers categories loading once the start emitter emits
+      .wait(this.start)
+      // Defines a side effect for loading categories
+      .effect(switchMap(() => categoriesService.get().pipe(transmit(categoriesReq))));
+  }, []);
+  
+  // Provides an async group for managing products loading process
+  productsReq = asyncSignalGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      // Triggers products loading after categories are successfully loaded
+      .wait(this.categoriesReq.success, () => this.routeFilters.filters())
+      // Reloads products when filters are updated
+      .receive(this.routeFilters.filters)
+      // Defines a side effect for loading products
+      .effect(switchMap(filters => productsService.get(filters).pipe(transmit(productsReq))));
+  }, []);
+  
+  // Provides the loading status state
+  isLoading = computed(() => this.categoriesReq.state().inProgress
+    || this.productsReq.state().inProgress);
+
+  // Provides the main store state
+  data = signalState<ProductsState>({categories: [], products: []}, s => s
+    // Combines data from categories and products into a single state
+    .select(
+      this.categoriesReq.success,
+      this.productsReq.success,
+      (categories, products) => ({categories, products}),
+    ),
+  );
+
+  // Provides the store error handling
+  errors = emitter<Error>(e => e
+    // Collects errors from asynchronous actions
+    .receive(this.categoriesReq.fail, this.productsReq.fail)
+    // Handle errors with a side effect
+    .tap(error => console.log('Error:', error)));
+
+  // Marks the store as ready, indicating that all store items have been defined
+  #ready = this.markAsReady();
+  
+  // Automatically starts the store after initialization
+  afterStoreInit(): void {
+    this.start.emit();
+  }
+}
+```
+
+```ts copy filename="products.component.ts"
+import {Component, inject} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'bf-products',
+  standalone: true,
+  templateUrl: './products.component.html',
+  imports: [ReactiveFormsModule],
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore).initialize();
+  readonly form = this.store.routeFilters.form;
+}
+```
+
+```angular-html copy filename="products.component.html"
+@if (!store.isLoading()) {
+  <div
+    class="bf-filters"
+    [formGroup]="form"
+  >
+    <input formControlName="search"/>
+    <pagenator formControlName="page"/>
+  </div>
+
+  @for (product of store.data().products; track product.id) {
+    <div class="bf-product">
+      {{product.name}} - {{product.price}}
+    </div>
+  }
+} @else {
+  Data is loading...
+}
+```

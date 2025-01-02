@@ -1,0 +1,58 @@
+import {Callout} from 'nextra/components';
+import {RxLink} from '../../';
+
+# Data sources
+
+Data sources act as facades for specific parts of data in external storages like local storage,
+session storage, cookies, and more. They implement a unified interface called
+<RxLink href="sources/reference/dataSource">DataSource</RxLink>, which simplifies integration with
+various storage mechanisms. This interface also enables states to seamlessly connect to external
+storages, ensuring that state remains synchronized with them.
+
+<Callout
+  type="info"
+  emoji="ℹ️"
+>
+  For more detailed information about using data sources, refer to
+  the <RxLink href="sources">Basic Data Sources Documentation</RxLink>.
+</Callout>
+
+## List of Data sources
+
+1. ### [Form Source](/store/reference/formSourceFn)
+
+Bridges Angular form controls with states, providing two-way synchronization between form data
+and application state for better maintainability and consistency.
+
+```ts copy
+import {FormControl, FormGroup} from '@angular/forms';
+import {switchMap} from 'rxjs';
+import {state, emitter} from '@bitfiber/rx';
+import {formSource} from '@bitfiber/ng/rx';
+
+interface FormValue {
+  itemId: number;
+  search: string;
+}
+
+// Creates a form group
+const formGroup = new FormGroup({
+  itemId: new FormControl(1, {nonNullable: true}),
+  search: new FormControl('', {nonNullable: true}),
+});
+
+// Creates a form state synchronized with the form
+const formState = state<FormValue>({itemId: 1, search: ''}, s => s
+  // Connects the state with the form group.
+  // Ensures two-way synchronization between the state and the form group:
+  // - Changing the state updates the form group.
+  // - Changing the form group updates the state.
+  .connect(formSource<FormValue>(formGroup)));
+
+// Creates an emitter for triggering the products loading process
+const productsReq = emitter<FormValue>(e => e
+  // Reloads products when the form value is updated
+  .receive(formState)
+  // Defines a side effect for products loading
+  .effect(switchMap(data => productsService.get(data))));
+```

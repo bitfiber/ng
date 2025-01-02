@@ -1,0 +1,415 @@
+# Reactive Stores Comparison for Angular
+
+In this comparison, I'll explore three different reactive store implementations for Angular:  
+`Bitfiber Reactive Store`, `RxJS Subjects Store`, and `NgRx Signal Store`.  
+We’ll focus on each solution’s unique strengths and limitations, examining their approaches to
+state management, the amount of boilerplate required, and how seamlessly they integrate with
+Angular’s reactive programming model.
+
+## Objectives
+
+Each store implementation will be evaluated based on its ability to accomplish the following tasks:
+
+1. **Load two dictionaries in parallel when the store starts.**  
+The store must initiate parallel loading of two dictionaries, ensuring both are ready before
+moving to the next step.
+
+2. **Load products after dictionaries are fully loaded.**  
+Once the dictionaries have successfully loaded, the store will initiate loading of products.
+This ensures that products are loaded in the context of available dictionary data.
+
+3. **Reload products each time the filters change.**  
+The store should reactively reload products based on any filter changes, ensuring that product
+data remains relevant to the latest filter criteria.
+
+## Common types
+
+```ts copy filename="products.types.ts"
+interface ProductsFilters {
+  search: string;
+  page: number;
+}
+
+interface DictItem {
+  id: number;
+  name: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  dict1: DictItem[];
+  dict2: DictItem[];
+  products: Product[];
+}
+```
+
+## Component Using Store
+
+```ts copy filename="products.component.ts"
+import {Component, inject, DestroyRef} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {debounceTime} from 'rxjs';
+import {ReactiveFormsModule, FormGroup, FormControl} from '@angular/forms';
+import {ProductsStore} from './products.store';
+
+@Component({
+  selector: 'bf-products',
+  templateUrl: './products.component.html',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  store = inject(ProductsStore).initialize();
+
+  form = new FormGroup({
+    search: new FormControl(''),
+    page: new FormControl(1),
+  });
+
+  #destroyRef = inject(DestroyRef);
+
+  #formSub = this.form.valueChanges
+    .pipe(
+      debounceTime(700),
+      takeUntilDestroyed(this.#destroyRef),
+    )
+    .subscribe(filters => this.store.updateFilters(filters));
+}
+
+
+```
+
+```angular-html copy filename="products.component.html"
+@if (!store.isLoading()) {
+  <div
+    class="bf-filters"
+    [formGroup]="form"
+  >
+    <input formControlName="search"/>
+    <pagenator formControlName="page"/>
+  </div>
+
+  @for (product of store.data().products; track product.id) {
+    <div class="bf-product">
+      {{product.name}} - {{product.price}}
+    </div>
+  }
+} @else {
+  Data is loading...
+}
+```
+
+## Bitfiber Reactive Store
+
+[Link to StackBlitz](https://stackblitz.com/edit/bitfiber-reactive-store-for-angular?file=src%2Fproducts%2Fproducts.store.ts)
+
+```ts copy filename="products.store.ts"
+import {inject, computed, Injectable} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {emitter, transmit} from '@bitfiber/rx';
+import {asyncSignalGroup, signalState, NgStore} from '@bitfiber/ng/rx';
+
+@Injectable()
+class ProductsStore extends NgStore {
+  #provider = inject(ProductsProvider);
+
+  #start = emitter<void>();
+  #filters = signalState<ProductsFilters>({search: '', page: 1})
+    .useLazyEmission();
+
+  #dict1Req = asyncSignalGroup<void, DictItem[], Error>((dict1Req, {launch}) => {
+    launch
+      .receive(this.#start)
+      .effect(switchMap(() => this.#provider.getDict1().pipe(transmit(dict1Req))));
+  }, []);
+
+  #dict2Req = asyncSignalGroup<void, DictItem[], Error>((dict2Req, {launch}) => {
+    launch
+      .receive(this.#start)
+      .effect(switchMap(() => this.#provider.getDict2().pipe(transmit(dict2Req))));
+  }, []);
+
+  #productsReq = asyncSignalGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      .wait(this.#dict1Req.success, this.#dict2Req.success, () => this.#filters())
+      .receive(this.#filters)
+      .effect(switchMap(filters => this.#provider.getProducts(filters)
+        .pipe(transmit(productsReq))));
+  }, []);
+
+  isLoading = computed(() =>
+    this.#dict1Req.state().inProgress
+    || this.#dict2Req.state().inProgress
+    || this.#productsReq.state().inProgress);
+
+  data = signalState<ProductsState>({dict1: [], dict2: [], products: []}, data => data
+    .select(
+      this.#dict1Req.success, this.#dict2Req.success, this.#productsReq.success,
+      (dict1, dict2, products) => ({dict1, dict2, products})
+    ));
+
+  #error = emitter<Error>(error => error
+    .receive(this.#dict1Req.fail, this.#dict2Req.fail, this.#productsReq.fail)
+    .tap(error => console.log('Error: ', error)));
+
+  #ready = this.markAsReady();
+
+  afterStoreInit(): void {
+    this.#start.emit();
+  }
+
+  updateFilters(filters: Partial<ProductsFilters>): void {
+    this.#filters.update(state => ({...state, ...filters}));
+  }
+}
+
+```
+
+## RxJs Subjects Store
+
+[Link to StackBlitz](https://stackblitz.com/edit/rxjs-subjects-store-for-angular?file=src%2Fproducts%2Fproducts.store.ts)
+
+```ts copy filename="products.store.ts"
+import {inject, signal, Signal, Injectable} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {
+  Observable, Subject, BehaviorSubject, of, switchMap, tap, startWith, combineLatest, catchError,
+  skip, merge, finalize,
+} from 'rxjs';
+
+@Injectable()
+class ProductsStore {
+  #provider = inject(ProductsProvider);
+
+  #start = new Subject<void>();
+  #filters = new BehaviorSubject<ProductsFilters>({search: '', page: 1});
+
+  #dict1InProgress = false;
+  #dict1Success = new Subject<DictItem[]>();
+  #dict1Req$ = this.#start
+    .pipe(
+      tap(() => this.#updateIsLoading(this.#dict1InProgress = true)),
+      switchMap(() => this.#provider.getDict1().pipe(
+        tap(data => this.#dict1Success.next(data)),
+        catchError(error => this.#handleError(error, [])),
+        finalize(() => this.#updateIsLoading(this.#dict1InProgress = false)),
+      )),
+    );
+
+  #dict2InProgress = false;
+  #dict2Success = new Subject<DictItem[]>();
+  #dict2Req$ = this.#start
+    .pipe(
+      tap(() => this.#updateIsLoading(this.#dict2InProgress = true)),
+      switchMap(() => this.#provider.getDict2().pipe(
+        tap(data => this.#dict2Success.next(data)),
+        catchError(error => this.#handleError(error, [])),
+        finalize(() => this.#updateIsLoading(this.#dict2InProgress = false)),
+      )),
+    );
+
+  #productsInProgress = false;
+  #productsReq$ = merge(
+    combineLatest([this.#dict1Req$, this.#dict2Req$], data => this.#filters.getValue()),
+    this.#filters.pipe(skip(1))
+  )
+    .pipe(
+      tap(() => this.#updateIsLoading(this.#productsInProgress = true)),
+      switchMap(filters => this.#provider.getProducts(filters).pipe(
+        catchError(error => this.#handleError(error, [])),
+        finalize(() => this.#updateIsLoading(this.#productsInProgress = false)),
+      )),
+    );
+
+  isLoading = signal<boolean>(false);
+
+  data!: Signal<ProductsState>;
+  #data$ = combineLatest({
+    dict1: this.#dict1Success, dict2: this.#dict2Success, products: this.#productsReq$,
+  }).pipe(
+    startWith({dict1: [], dict2: [], products: []}),
+  );
+
+  initialize(): this {
+    this.data = toSignal(this.#data$) as Signal<ProductsState>;
+    this.#start.next();
+    return this;
+  }
+
+  updateFilters(filters: Partial<ProductsFilters>): void {
+    this.#filters.next({...this.#filters.getValue(), ...filters});
+  }
+
+  #updateIsLoading(value: boolean): void {
+    this.isLoading.set(this.#dict1InProgress || this.#dict2InProgress || this.#productsInProgress);
+  }
+
+  #handleError(error: Error, fallbackValue: any): Observable<any> {
+    console.log('Error: ', error);
+    return of(fallbackValue);
+  }
+}
+
+```
+
+## NgRx Signal Store
+
+[Link to StackBlitz](https://stackblitz.com/edit/ngrx-signal-store-for-angular?file=src%2Fproducts%2Fproducts.store.ts)
+
+```ts copy filename="products.store.ts"
+import {inject, computed, effect, untracked} from '@angular/core';
+import {patchState, signalStore, withComputed, withMethods, withState,} from '@ngrx/signals';
+import {tapResponse} from '@ngrx/operators';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
+
+interface StoreState {
+  filters: ProductsFilters;
+  data: ProductsState;
+  dict1InProgress: boolean;
+  dict2InProgress: boolean;
+  productsInProgress: boolean;
+  error: Error | null;
+}
+
+const initialState: StoreState = {
+  filters: {search: '', page: 1},
+  data: {dict1: [], dict2: [], products: []},
+  dict1InProgress: false,
+  dict2InProgress: false,
+  productsInProgress: false,
+  error: null,
+};
+
+export const ProductsStore = signalStore(
+  withState(initialState),
+
+  withComputed(({dict1InProgress, dict2InProgress, productsInProgress}) => ({
+    isLoading: computed(() => dict1InProgress() || dict2InProgress() || productsInProgress()),
+  })),
+
+  withMethods((store, provider = inject(ProductsProvider)) => {
+    return {
+      getDict1: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, {dict1InProgress: true})),
+          switchMap(() => provider.getDict1().pipe(
+            tapResponse({
+              next: dict1 => patchState(store, {data: {...store.data(), dict1}}),
+              error: (error: Error) => patchState(store, {error}),
+              finalize: () => patchState(store, {dict1InProgress: false}),
+            }),
+          )),
+        ),
+      ),
+
+      getDict2: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, {dict2InProgress: true})),
+          switchMap(() => provider.getDict1().pipe(
+            tapResponse({
+              next: dict2 => patchState(store, {data: {...store.data(), dict2}}),
+              error: (error: Error) => patchState(store, {error}),
+              finalize: () => patchState(store, {dict1InProgress: false}),
+            }),
+          )),
+        ),
+      ),
+
+      getProducts: rxMethod<ProductsFilters>(
+        pipe(
+          tap(() => patchState(store, {productsInProgress: true})),
+          switchMap(filters => provider.getProducts(filters).pipe(
+            tapResponse({
+              next: products => patchState(store, {data: {...store.data(), products}}),
+              error: (error: Error) => patchState(store, {error}),
+              finalize: () => patchState(store, {productsInProgress: false}),
+            }),
+          )),
+        ),
+      ),
+
+      updateFilters(filters: Partial<ProductsFilters>): void {
+        patchState(store, {filters: {...store.filters(), ...filters}});
+      },
+    };
+  }),
+
+  withMethods(store => {
+    return {
+      initialize(): typeof store {
+        store.getDict1();
+        store.getDict2();
+
+        effect(() => {
+          if (store.data.dict1().length && store.data.dict2().length) {
+            untracked(() => store.getProducts(store.filters));
+          }
+        });
+
+        effect(() => {
+          if (store.error()) {
+            untracked(() => console.log('Error: ', store.error()));
+          }
+        });
+
+        return store;
+      },
+    };
+  }),
+);
+
+```
+
+## Conclusion
+
+### Bitfiber Reactive Store
+
+**Pros:**
+
+* Requires less code to implement store.
+* Easily connects multiple emitters, states, and observables to each other.
+* Produces easy-to-read code with a clear structure, making connections between emitters, states,
+and observables traceable.
+* Fully integrates with RxJS, allowing seamless interaction with observables and subjects,
+as well as use of RxJS operators.
+* Provides signal states for smooth integration with Angular signals.
+* Automatically manages subscriptions and completions.
+* Offers built-in solutions for:  
+&nbsp;- Handling asynchronous tasks.  
+&nbsp;- Maintaining route-based filters.  
+&nbsp;- Integrating with Angular forms.  
+&nbsp;- Synchronizing with data sources like local storage, cookie, and other external data sources.
+
+### RxJS Subjects Store
+
+**Pros:**
+
+* Requires no additional dependencies beyond RxJS, keeping it lightweight.
+
+**Cons:**
+
+* Requires more code to implement store.
+* Stream binding is more complex and can be harder to follow.
+* Requires careful manual unsubscription to prevent memory leaks, adding maintenance overhead.
+
+### NgRx Signal Store
+
+**Pros:**
+
+* Provides full and robust integration with Angular signals.
+* Offers built-in solutions for:  
+&nbsp;- Handling asynchronous tasks.  
+&nbsp;- Entity Management.
+
+**Cons:**
+
+* Requires more code to implement store.
+* Limited RxJS functionality, offering only rxMethod for integration.
+* Binding rxMethod streams to each other can be challenging, especially when complex workflows
+require async task dependencies or sequencing.

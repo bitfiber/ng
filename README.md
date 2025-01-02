@@ -1,11 +1,11 @@
-# @bitfiber/ng/rx - Reactive State and Async Workflow Management Library for Angular
+# @bitfiber/ng/rx - Reactive State and Async Dataflow Management Library for Angular
 
 [![Release Notes](https://img.shields.io/github/release/bitfiber/ng)](https://github.com/bitfiber/ng/releases)
 [![GitHub star chart](https://img.shields.io/github/stars/bitfiber/ng?style=social)](https://star-history.com/#bitfiber/ng)
 [![GitHub fork](https://img.shields.io/github/forks/bitfiber/ng?style=social)](https://github.com/bitfiber/ng/fork)
 
-`@bitfiber/ng/rx` is an Angular-specific extension of [@bitfiber/rx](https://github.com/bitfiber/rx) built on top of [RxJS](https://github.com/ReactiveX/rxjs),
-designed to manage reactive state, asynchronous workflows, and events in Angular applications.
+`@bitfiber/ng/rx` is an Angular-specific extension of [@bitfiber/rx](https://github.com/bitfiber/rx) built on top of [RxJS](https://rxjs.dev),
+designed to manage reactive state, asynchronous dataflow, and events in Angular applications.
 It provides a structured approach to handling complex data flows using emitters, states, groups,
 and stores, allowing seamless integration of various reactive sources like emitters, states,
 and observables. Emitters and states can be organized into groups and stores, enabling efficient
@@ -24,7 +24,7 @@ management and lifecycle control of related reactive sources.
 
 
 3. **Async Signal Group**  
-   Manages asynchronous workflows and stores their state in the signal state.
+   Manages asynchronous dataflow and stores their state in the signal state.
 
 
 4. **Route Group**  
@@ -146,10 +146,9 @@ By participating, you are expected to uphold this code.
 
 ## License
 
-This project is released under the Apache 2.0 License.  
-You can find the full text of the license in the [LICENSE](https://github.com/bitfiber/ng/blob/main/LICENSE.txt)
-file.  
-Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
+Code licensed under an [Apache 2.0 License](https://github.com/bitfiber/ng/blob/main/LICENSE.txt).  
+Documentation licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/).  
+Copyright © 2023-2025 Oleksandr Zmanovskyi. All rights reserved.
 
 ---
 
@@ -1204,7 +1203,7 @@ where you would normally use a signal.
 
 The `AsyncSignalGroup` class extends `AbstractAsyncGroup` and is designed to facilitate
 the management of asynchronous actions. This structure allows for organized
-and efficient management of complex asynchronous workflows
+and efficient management of complex asynchronous dataflow
 
 `@template L` - The type representing the data for the launch emitter  
 `@template S` - The type representing the data for the success emitter  
@@ -2123,7 +2122,7 @@ const formGroup = new FormGroup({
 const source = formSource<FormValue>(formGroup);
 
 // Sets a new form value
-const value = source.set({itemId: 2, search: 'abc'});
+source.set({itemId: 2, search: 'abc'});
 
 ```
 
@@ -2154,7 +2153,7 @@ const formGroup = new FormGroup({
 const source = formSource<FormValue>(formGroup);
 
 // Resets the current form value to its initial state
-const value = source.remove();
+source.remove();
 
 ```
 

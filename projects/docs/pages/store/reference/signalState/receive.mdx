@@ -1,0 +1,76 @@
+import {Badge} from '../../../../';
+
+# receive <Badge type={'method'}>Method</Badge>
+
+## Overload 1
+
+Receives values from one or more emitters, states, or observables
+and emits them to all subscribers of this state.
+
+This method allows this state to listen to external sources and relay their
+emitted values to its own subscribers, effectively linking multiple data streams together
+
+`@param ...inputs: EmitterOrObservable<T>[] {:ts}`  
+One or more emitters, states, or observables that provide values to be emitted by this state
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+receive(...inputs: EmitterOrObservable<T>[]): this;
+```
+
+### Example
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+const source1 = emitter<number>();
+const source2 = signalState<number>(1);
+const source3$ = of(1);
+
+const result = signalState<number>(0, s => s
+  // Receives data from each reactive source separately and emits a value to its subscribers
+  // immediately, without waiting for other sources to emit
+  .receive(source1, source2, source3$));
+```
+## Overload 2
+
+Receives a value from an emitter, state, or observable, applies a reducer function to convert
+this value to the state's type, and emits the result to all subscribers of this state.
+
+This method allows this state to listen to external source and relay the transformed
+emitted value to its own subscribers, effectively linking data streams together
+
+`@param input: EmitterOrObservable<I> {:ts}`  
+An emitter, state or observable that provide values to be emitted by this state
+
+`@param reducer: (value: I, state: T) => T {:ts}`  
+A function that converts or transforms the received value from the input type to the type expected
+by this state. This function takes the value emitted by the input and this state value as
+parameters, and returns the new state value
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+### API
+
+```ts copy
+receive<I>(input: EmitterOrObservable<I>, reducer: (value: I, state: T) => T): this;
+```
+
+### Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const source = signalState<number>(1);
+
+const result = signalState<string>('', s => s
+  // Receives data from a reactive source, converts the value, and emits the result to its subscribers
+  .receive(source, value => String(value)));
+```

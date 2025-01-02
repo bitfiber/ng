@@ -8,11 +8,12 @@ import {AbstractState, completeWith, operator} from '@bitfiber/rx';
 export type SignalStateType<T> = SignalState<T> & Signal<T>;
 
 /**
- * Creates the signal state that combines the functionality of both the `SignalState` class
- * and the `Signal` interface, initialized with the provided `initialValue`.
+ * Creates the signal state that combines the functionality of both the `SignalState` class and
+ * the `Signal` interface, initialized with the provided `initialValue`.
  *
- * This state can behave like a 'State' or as an Angular signal. It can be used in Angular's
- * `effect` or `computed` functions and in other places where you would normally use a signal.
+ * The signal state provides the same functionality as `State`. Additionally, it behaves like
+ * an Angular signal, enabling its use in Angular's `effect` and `computed` functions, as well
+ * as in other contexts where signals are typically used.
  *
  * Optionally, you can provide an `onInit` callback function, which is called just before
  * the initialization process, allowing you to perform setup tasks or configure the state before
@@ -36,15 +37,15 @@ export function signalState<T>(
 }
 
 /**
- * Represents a signal state in a reactive store, extending the functionality of `AbstractState`.
- * This class encapsulates the logic for updating, resetting and maintaining a state,
- * reacting to changes, and notifying subscribers whenever the state is updated.
+ * Represents a core data container in the reactive store, responsible for maintaining and
+ * broadcasting data updates to multiple subscribers. Like emitters, the state can create and manage
+ * reactive streams to broadcast changes efficiently. It is designed to simplify state
+ * propagation and synchronization across stores or features, ensuring consistency. The state can
+ * also integrate seamlessly with other reactive sources like emitters, states, and observables.
  *
- * This state can behave like a 'State' or as an Angular signal. It can be used in Angular's
- * `effect` or `computed` functions and in other places where you would normally use a signal.
- *
- * It can also be connected to external data sources to synchronize its value with external data,
- * ensuring consistency across different parts of an application
+ * The signal state provides the same functionality as `State`. Additionally, it behaves like
+ * an Angular signal, enabling its use in Angular's `effect` and `computed` functions, as well as
+ * in other contexts where signals are typically used
  *
  * @template T - The type of data managed and emitted by the state
  */

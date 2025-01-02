@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# initialParams <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Initial values for the route params
+
+## API
+
+```ts copy
+initialParams?: P;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group
+const route = routeGroup<{id: number; type: string}>({
+  // Sets the initial values for route params
+  initialParams: {id: 0, type: 'all'},
+});
+```

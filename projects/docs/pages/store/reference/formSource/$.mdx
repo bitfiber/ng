@@ -1,0 +1,38 @@
+import {Badge} from '../../../../';
+
+# $ <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+Allows subscribers to reactively observe changes or updates to the data in an Angular form
+
+## API
+
+```ts copy
+readonly $: Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {FormControl, FormGroup} from '@angular/forms';
+import {map} from 'rxjs';
+import {formSource} from '@bitfiber/ng/rx'; 
+
+interface FormValue {
+  itemId: number;
+  search: string;
+}
+
+// Creates a form group
+const formGroup = new FormGroup({
+  itemId: new FormControl(1, {nonNullable: true}),
+  search: new FormControl('', {nonNullable: true}),
+});
+
+// Creates a form source
+const source = formSource<FormValue>(formGroup);
+
+// Uses form source observable
+source.$
+  .pipe(map(v => v * 2))
+  .subscribe(v => console.log(v));
+```

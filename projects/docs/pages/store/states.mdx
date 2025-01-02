@@ -1,0 +1,45 @@
+import {Callout} from 'nextra/components';
+import {RxLink} from '../../';
+
+# Signal States
+
+Signal states are the core data containers in the reactive store, responsible for maintaining and
+broadcasting data updates to multiple subscribers. Like emitters, states can create and manage
+reactive streams to broadcast changes efficiently. They are designed to simplify state
+propagation and synchronization across stores or features, ensuring consistency. States can also
+integrate seamlessly with other reactive sources like emitters, states, and observables.
+
+<Callout
+  type="info"
+  emoji="ℹ️"
+>
+  For more detailed information about using states, refer to
+  the <RxLink href="store/states">Basic States Documentation</RxLink>.
+</Callout>
+
+## Creating a Signal State
+
+To create [SignalState](/store/reference/signalState), use
+the [signalState](/store/reference/signalStateFn) function:
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const counter = signalState<number>(0);
+```
+
+## Interaction with Signals
+
+The signal state provides the same functionality as the <RxLink href="store/reference/state">State</RxLink>.
+Additionally, it behaves like an Angular signal, enabling its use in Angular's `effect` and
+`computed` functions, as well as in other contexts where signals are typically used.
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+import {computed} from '@angular/core';
+
+const counter = signalState<number>(0);
+
+// Usage the signal state within a 'computed' function
+const message = computed(() => `Number of clicks: ${counter()}`);
+```

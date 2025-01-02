@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# launch <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An emitter that triggers the start of an asynchronous action.
+This emitter takes a payload of type `L`, which contains the necessary data
+to initiate the action
+
+## API
+
+```ts copy
+readonly launch: Emitter<L>;
+```
+
+## Example
+
+```ts copy
+import {asyncSignalGroup} from '@bitfiber/ng/rx';
+
+// Creates an asynchronous group
+const group = asyncSignalGroup<number, string[], Error>(({launch}) => {
+  // Sets an effect to be triggered on new launch emissions
+  launch.tap(v => console.log(v));
+});
+
+// Emits a new value to its own subscribers
+group.launch.emit(1);
+```

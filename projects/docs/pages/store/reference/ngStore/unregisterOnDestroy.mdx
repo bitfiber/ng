@@ -1,0 +1,43 @@
+import {Badge} from '../../../../';
+
+# unregisterOnDestroy <Badge type={'method'}>Method</Badge>
+
+Cancels the registration of automatically completing the store
+when the associated component or service is destroyed
+
+`@returns this {:ts}`  
+The current instance of the store, allowing for method chaining
+
+## API
+
+```ts copy
+unregisterOnDestroy(): this;
+```
+
+## Example
+
+```ts copy
+import {Injectable} from '@angular/core';
+import {signalState, NgStore} from '@bitfiber/ng/rx';
+
+@Injectable()
+class ProductsStore extends NgStore {
+  products = signalState<any[]>();
+  #ready = this.markAsReady();
+}
+```
+
+```ts copy
+import {Component, inject} from '@angular/core';
+
+@Component({
+  selector: 'bf-products',
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore)
+    // Cancels the registration of automatically completing the store
+    .unregisterOnDestroy()
+    .initialize();
+}
+```

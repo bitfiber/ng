@@ -1,0 +1,45 @@
+import {Badge} from '../../../../';
+
+# select <Badge type={'method'}>Method</Badge>
+
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this state.
+
+The first emission occurs only after all values have been received from the sources, ensuring that
+the reducer function operates on a complete set of inputs. Subsequent emissions occur whenever any
+of the sources emit a new value, triggering the reducer function to recompute the result based on
+the latest values. Works similarly to the RxJs 'combineLatest' operator
+
+`@param ...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>] {:ts}`  
+A spread of emitters, states, or observables, followed by a reducer function. The reducer function
+takes the latest values from each source as arguments and returns the value to be emitted
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+select<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+```
+
+## Example
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+type Result = {launchId: number; data: string; count: number};
+
+const launch = emitter<number>();
+const data = signalState<string>(1);
+const count$ = of(1);
+
+const result = signalState<Result>({launchId: 0, data: '', count: 0}, s => s
+  // Selects data from all reactive sources and emits the result to its subscribers.
+  // Works similarly to the RxJs 'combineLatest' operator
+  .select(launch, data, count$, (launchId, data, count) => {
+    launchId, data, count
+  }));
+```

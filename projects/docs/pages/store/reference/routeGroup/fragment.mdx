@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# fragment <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+A signal state that represents the route fragment
+
+## API
+
+```ts copy
+readonly fragment: SignalStateType<string | null>;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a group of signal states for managing the route
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  hasFragment: true,
+}, ({fragment}) => {
+  fragment
+    // Performs a tap callback each time the route fragment changes
+    .tap(fragment => console.log(fragment));
+});
+```

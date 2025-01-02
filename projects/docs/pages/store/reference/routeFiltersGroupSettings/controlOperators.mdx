@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# controlOperators <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A set of RxJS operator functions for the base control flow that define how control values
+are processed before being applied to the filters state, query and route params
+
+## API
+
+```ts copy
+controlOperators?: ControlOperators<Partial<Q & P>>;
+```
+
+## Example
+
+```ts copy
+import {debounceTime} from 'rxjs';
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+  // Assigns operators to specific form controls
+  controlOperators: {search: [debounceTime(150)]},
+});
+```

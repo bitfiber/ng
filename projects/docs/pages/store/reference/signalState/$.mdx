@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# $ <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An observable that serves as the source for all state streams.
+It allows subscribers to reactively observe changes or updates to the state, allowing them to
+respond dynamically as new values are emitted
+
+## API
+
+```ts copy
+readonly $: Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx'; 
+import {map} from 'rxjs';
+
+const data = signalState<number>(10);
+
+// Uses state observable
+data.$
+  .pipe(map(v => v * 2))
+  .subscribe(v => console.log(v));
+```

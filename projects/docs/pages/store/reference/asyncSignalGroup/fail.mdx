@@ -1,0 +1,37 @@
+import {Badge} from '../../../../';
+
+# fail <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An emitter that triggers when an asynchronous action fails.
+This emitter takes a payload of type `F`, which contains the error information or data
+related to the failure of the action
+
+## API
+
+```ts copy
+readonly fail: Emitter<F>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {asyncSignalGroup} from '@bitfiber/ng/rx';
+
+// Creates an asynchronous group
+const group = asyncSignalGroup<number, string[], Error>((group, {launch, fail}) => {
+  launch
+    // Sets an effect to be triggered on new launch emissions
+    .effect(
+      switchMap(page => apiService.get(`api/get?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+
+  fail
+    // Performs a tap callback each time the request fails
+    .tap(error => console.log(error));
+});
+```

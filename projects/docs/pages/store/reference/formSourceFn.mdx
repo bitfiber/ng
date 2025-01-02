@@ -1,0 +1,56 @@
+import {Badge} from '../../../';
+
+# formSource <Badge type={'function'}>Function</Badge>
+
+Creates an instance of [Form Source](/store/reference/formSource), which provides streamlined
+access to the data in an Angular form. It can handle any instance of `AbstractControl`, such as
+`FormControl`, `FormGroup`, or `FormArray`
+
+`@template T {:ts}`  
+The type of data managed by the Angular form
+
+`@param form: AbstractControl<T> {:ts}`  
+An instance of `AbstractControl` that can be a `FormControl`, `FormGroup`, or `FormArray`
+
+`@returns FormSource<T> {:ts}`
+
+## API
+
+```ts copy
+function formSource<T>(form: AbstractControl<T>): FormSource<T>;
+```
+
+## Example
+
+```ts copy
+import {FormControl, FormGroup} from '@angular/forms';
+import {switchMap} from 'rxjs';
+import {state, emitter} from '@bitfiber/rx';
+import {formSource} from '@bitfiber/ng/rx';
+
+interface FormValue {
+  itemId: number;
+  search: string;
+}
+
+// Creates a form group
+const formGroup = new FormGroup({
+  itemId: new FormControl(1, {nonNullable: true}),
+  search: new FormControl('', {nonNullable: true}),
+});
+
+// Creates a form state synchronized with the form
+const formState = state<FormValue>({itemId: 1, search: ''}, s => s
+  // Connects the state with the form group.
+  // Ensures two-way synchronization between the state and the form group:
+  // - Changing the state updates the form group.
+  // - Changing the form group updates the state.
+  .connect(formSource<FormValue>(formGroup)));
+
+// Creates an emitter for triggering the products loading process
+const productsReq = emitter<FormValue>(e => e
+  // Reloads products when the form value is updated
+  .receive(formState)
+  // Defines a side effect for products loading
+  .effect(switchMap(data => productsService.get(data))));
+```

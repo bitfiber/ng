@@ -2,3 +2,8 @@ dist
 coverage
 node_modules
 .angular
+
+# next.js
+/projects/docs/.next/
+/projects/docs/dist/
+/projects/docs/next-env.d.ts

@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# withoutRoute <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A boolean flag that indicates whether the filter changes should be synchronized with the route.
+When set to `true`, filter changes are applied without updating the route params.
+Defaults to `false`, meaning changes are reflected in the route by default
+
+## API
+
+```ts copy
+withoutRoute?: boolean;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+  // Filter changes are applied without updating the route params
+  withoutRoute: true,
+});
+```

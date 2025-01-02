@@ -1,0 +1,121 @@
+import {Badge} from '../../../';
+
+# routeGroup <Badge type={'function'}>Function</Badge>
+
+Creates a new [RouteGroup](/store/reference/routeGroup) instance that facilitates the reactive
+management of Angular's route data, including params, query params, and the fragment, within
+the current route.
+
+Route elements are represented as signal states, making them usable in Angular's
+reactive constructs such as `effect` or `computed` functions, and other places where
+signals are typically used.
+
+The properties of the generic types `Q` and `P` can be any type because, before being set to
+the route, they are converted to strings using `JSON.stringify`. When states receive parameters
+from the route, they are converted back to their respective types using `JSON.parse`.
+
+This function also allows for an optional `onInit` callback, which can be used to perform
+additional setup or configuration just before the group initialization
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+`@param settings: RouteGroupSettings<Q, P> {:ts}`  
+The settings for configuring a `RouteGroup`
+
+`@param onInit?: (group: RouteGroup<Q, P>, sameGroup: RouteGroup<Q, P>) => void {:ts}`  
+An optional callback function executed just before the group initialization
+
+`@returns RouteGroup<Q, P> {:ts}`
+
+See also: [RouteGroupSettings](/store/reference/routeGroupSettings)
+
+## API
+
+```ts copy
+function routeGroup<Q extends Index = object, P extends Index = object>(
+  settings: RouteGroupSettings<Q, P>,
+  onInit?: (group: RouteGroup<Q, P>, sameGroup: RouteGroup<Q, P>) => void,
+): RouteGroup<Q, P>;
+```
+
+## Example
+
+```ts copy
+import {computed} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {routeGroup} from '@bitfiber/ng/rx';
+
+interface RouteParams {
+  id: number;
+  type: string;
+}
+
+interface RouteQueryParams {
+  page: number;
+  search: string;
+  groupId: number | null;
+}
+
+// Creates a route group for managing route data
+const route = routeGroup<RouteQueryParams, RouteParams>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {search: '', page: 1, groupId: null},
+  segments: params => [params.type, params.id],
+  hasFragment: true,
+}, ({params, queryParams, allParams, fragment}) => {
+  params
+    // Defines a side effect for the route params change
+    .tap(data => console.log(data));
+
+  queryParams
+    // Defines a side effect for the query params change
+    .tap(data => console.log(data));
+
+  allParams
+    // Defines a side effect for changes in either route or query params
+    .tap(data => console.log(data));
+
+  fragment
+    // Defines a side effect for fragment changes
+    .tap(fragment => console.log(fragment));
+});
+
+// Creates an emitter for triggering the products loading process
+const productsReq = emitter<RouteQueryParams & RouteParams>(e => e
+  // Reloads products when route params are updated
+  .receive(route.allParams)
+  // Defines a side effect for the products loading process
+  .effect(switchMap(params => productsService.getAll(params))));
+
+// Computes a CSS class based on the route type
+const typeClass = computed(() => `bf-${route.params().type}`);
+
+// Initializes the group and all its items
+route.initialize();
+
+// Updates the route params and their associated state
+route.params.set({id: 2, type: 'new'});
+
+// Updates the query params and their associated state
+route.queryParams.update(state => ({...state, search: 'abc'}));
+
+// Updates both params and query params in the route and their associated states
+route.allParams.update(state => ({...state, type: 'old', search: 'abc'}));
+
+// Updates the fragment in the route and its associated state
+route.fragment.set('someFragment');
+
+// Simultaneously updates all states and the route params, query params, and fragment
+route.changeUrl({id: 2, type: 'new', search: 'abc'}, 'someFragment');
+
+// Resets all states, params, query params, and fragment to their initial values
+route.resetUrl();
+
+// Completes the group and all its items
+route.complete();
+```

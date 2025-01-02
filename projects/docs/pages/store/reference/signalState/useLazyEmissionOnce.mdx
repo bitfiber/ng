@@ -1,0 +1,39 @@
+import {Badge} from '../../../../';
+
+# useLazyEmissionOnce <Badge type={'method'}>Method</Badge>
+
+Enables one-time lazy emission for the next created stream.
+
+Once the `useLazyEmissionOnce` method is called, the state will defer emitting its initial value
+until an explicit trigger occurs. This lazy emission behavior will apply only once for the next
+stream that is created. After this initial deferred emission, subsequent streams will emit values
+immediately as changes occur.
+
+This method can be called multiple times before creating streams, allowing you to control
+when the lazy emission behavior is applied.
+
+By default, one-time lazy emission is disabled, meaning that streams will emit their initial
+values immediately upon creation unless this behavior is explicitly overridden
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+useLazyEmissionOnce(): this;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(0, s => s
+  // Forces the next stream not to emit a value at the time of subscription
+  .useLazyEmissionOnce()
+  // Will not emit a value at the time of subscription
+  .effect()
+  // Will emit a value at the time of subscription
+  .transmit());
+```

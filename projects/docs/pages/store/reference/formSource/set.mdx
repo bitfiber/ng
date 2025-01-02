@@ -1,0 +1,38 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a new value for the form control, form group, or form array
+
+`@param value: T {:ts}`  
+A new form value
+
+## API
+
+```ts copy
+set(value: T): void;
+```
+
+## Example
+
+```ts copy
+import {FormControl, FormGroup} from '@angular/forms';
+import {formSource} from '@bitfiber/ng/rx';
+
+interface FormValue {
+  itemId: number;
+  search: string;
+}
+
+// Creates a form group
+const formGroup = new FormGroup({
+  itemId: new FormControl(1, {nonNullable: true}),
+  search: new FormControl('', {nonNullable: true}),
+});
+
+// Creates a form source
+const source = formSource<FormValue>(formGroup);
+
+// Sets a new form value
+const value = source.set({itemId: 2, search: 'abc'});
+```

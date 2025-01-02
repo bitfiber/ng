@@ -1,0 +1,142 @@
+import {Badge, RxLink} from '../../../';
+
+# signalState <Badge type={'function'}>Function</Badge>
+
+Creates the signal state that combines the functionality of both
+the [SignalState](/store/reference/signalState) class and the `Signal` interface, initialized
+with the provided `initialValue`.
+
+The signal state provides the same functionality as the <RxLink href="store/reference/state">State</RxLink>.
+Additionally, it behaves like an Angular signal, enabling its use in Angular's `effect` and
+`computed` functions, as well as in other contexts where signals are typically used.
+
+Optionally, you can provide an `onInit` callback function, which is called just before
+the initialization process, allowing you to perform setup tasks or configure the state before
+it starts emitting values
+
+`@template T {:ts}`  
+The type of the state value
+
+`@param initialValue: T {:ts}`  
+The initial value of the state
+
+`@param onInit?: (state: SignalStateType<T>) => void {:ts}`  
+An optional callback function that is executed just before the initialization of the state,
+allowing you to perform setup tasks or configure the state before it starts emitting values
+
+`@returns SignalStateType<T> {:ts}`  
+A new [SignalState](/store/reference/signalState) instance that also acts as the `Signal`
+
+## API
+
+```ts copy
+function signalState<T>(
+  initialValue: T,
+  onInit?: (state: SignalStateType<T>) => void,
+): SignalStateType<T>;
+```
+
+## Example
+
+```ts copy
+import {computed} from '@angular/core';
+import {take, filter, switchMap} from 'rxjs';
+import {namedGroup} from '@bitfiber/rx';
+import {signalState} from '@bitfiber/ng/rx';
+
+// Creates a state that stores and emits the IDs
+const currentId = signalState<number>(1, s => s
+  // Uses a custom function for comparing values. By default, the 'equals' function is used
+  .compareBy((a, b) => a === b)
+  // Transmits all emitted data to the 'productReq' emitter
+  .transmit(productReq));
+
+// The observable of the state
+const currentId$ = currentId.$;
+
+// Creates a state that stores and emits the final ID
+const lastId = signalState<number | null>(null, s => s
+  // Uses '===' for comparing values. By default, the 'equals' function is used
+  .compareBy('strict')
+  // Forces the state not to emit a value at the time of subscription
+  .useLazyEmission());
+
+// Creates a state that receives transmitted 'currentId' data and performs an effect that calls an API
+const productReq = signalState<number>(0, s => s
+  // All streams created by this state will filter the data
+  .manage(
+    filter(id => !!(id % 2)),
+  )
+  // Performs a tap callback each time the state emits new filtered data
+  .tap(id => {
+    console.log(id);
+  })
+  // Performs a effect each time the state emits new filtered data
+  .effect(
+    switchMap(id => productsService.get(`api/product${id}`)),
+  ));
+
+// Creates a state that receives used IDs and logs them through an effect
+const log = signalState<string>(0, s => s
+  // Runs an effect when data is received from the `currentId` state
+  .receive(currentId, id => `A new id ${id} was received`)
+  // Runs an effect when data is received from the `lastId` state
+  .receive(lastId, id => `the last id ${id} was received`)
+  // Performs an effect each time the state emits newly received logged data
+  .effect(
+    switchMap(log => logService.post(`api/log`, {log})),
+  ));
+
+// Creates a state that performs a tap callback each time data is selected
+const result1 = signalState<[number, number]>([0, 0], s => s
+  // Runs a tap callback when all data is selected from the `currentId` and `lastId` states
+  .select(currentId$, lastId, (currentId, lastId) => [currentId, lastId])
+  // Performs a tap callback each time the state emits new data
+  .tap(range => {
+    console.log(range);
+  }));
+
+// Creates a state that performs a tap callback each time data is selected
+const result2 = signalState<[number, number]>([0, 0], s => s
+  // Runs a tap callback when all data is selected from the `currentId` and `lastId` states
+  .zip(currentId$, lastId, (currentId, lastId) => [currentId, lastId])
+  // Performs a tap callback each time the state emits new data
+  .tap(range => {
+    console.log(range);
+  }));
+
+// Creates a state that records the timestamp of the last received ID
+const lastIdTime = signalState<number | null>(null, s => s
+  // Waits for the first value from the `lastId` state, then completes the stream
+  .wait(lastId, lastId => new Date().getTime()));
+
+// Demonstrates the usage of signal states within Angular's `computed` function
+const results = computed(() => result1().concat(result2()));
+
+// Groups all emitters and states for mass initialization and completion
+const group = namedGroup({currentId, lastId, productReq, log, result1, result2});
+
+// Initializes the group and all items within the group
+group.initialize();
+
+// Subscribes to the observable of the state
+currentId$
+  .pipe(take(1))
+  .subscribe(id => console.log(id));
+
+// Sets the state value and emits the new value to subscribers
+currentId.set(2);
+
+// Updates the state value and emits the new value to subscribers
+currentId.update(state => state + 1);
+
+// Accesses the 'lastId' state through the group and sets data
+group.lastId.set(4);
+
+// Gets the current state value in two ways
+const id1 = currentId();
+const id2 = currentId.get();
+
+// Completes the group and all items within the group
+group.complete();
+```

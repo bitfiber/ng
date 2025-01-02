@@ -1,0 +1,37 @@
+import {Badge} from '../../../../';
+
+# success <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An emitter that triggers when an asynchronous action completes successfully.
+This emitter takes a payload of type `S`, which contains the result or data associated
+with the successful completion of the action
+
+## API
+
+```ts copy
+readonly success: Emitter<S>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {asyncSignalGroup} from '@bitfiber/ng/rx';
+
+// Creates an asynchronous group
+const group = asyncSignalGroup<number, string[], Error>((group, {launch, success}) => {
+  launch
+    // Sets an effect to be triggered on new launch emissions
+    .effect(
+      switchMap(page => apiService.get(`api/get?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+
+  success
+    // Performs a tap callback each time the request succeeds
+    .tap(data => console.log(data));
+});
+```

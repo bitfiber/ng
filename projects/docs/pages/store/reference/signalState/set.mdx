@@ -1,0 +1,31 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Updates the state to the provided `value` immediately, but the emission of this
+new value to subscribers will be performed asynchronously. This means that if multiple
+synchronous updates are made in quick succession, only the last update will be emitted,
+optimizing the emission process to prevent unnecessary updates
+
+`@param value: T {:ts}`  
+The new value to set as the current state
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+set(value: T): this;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(0);
+
+// Sets a new state value and emits the updated state to its subscribers
+data.set(7);
+```

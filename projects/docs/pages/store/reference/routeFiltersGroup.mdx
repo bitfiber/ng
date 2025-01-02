@@ -1,0 +1,50 @@
+import {Badge} from '../../../';
+
+# RouteFiltersGroup <Badge type={'class'}>Class</Badge>
+
+Represents a route filters group that facilitates the reactive management of Angular's
+form-based filters and links these filters with the route.
+
+The `RouteFiltersGroup` class allows for managing form filters as reactive state that
+is synchronized with the current route's query and route params. The filters are represented
+as signal state, making it usable in Angular's reactive constructs such as `effect` or
+`computed` functions, and other places where signals are typically used.
+
+The properties of the generic types `Q` and `P` can be any type because, before being set to
+the route, they are converted to strings using `JSON.stringify`. When filters receive parameters
+from the route, they are converted back to their respective types using `JSON.parse`.
+
+This class extends `AbstractGroup` to provide a structured way to organize and manage
+the filters state within the Rx store
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+See also: [RouteFiltersGroupSettings](/store/reference/routeFiltersGroupSettings)
+
+## API
+
+```ts copy
+class RouteFiltersGroup<Q extends Index = object, P extends Index = object> extends AbstractGroup {
+  readonly filters: SignalStateType<Q & P>;
+  readonly route: RouteGroup<Q, P>;
+  readonly form: FormGroup<FilterControls<Q & P>>;
+  constructor(settings: RouteFiltersGroupSettings<Q, P>);
+  initialize(): this;
+  complete(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+});
+```

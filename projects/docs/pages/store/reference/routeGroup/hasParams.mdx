@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# hasParams <Badge type={'method'}>Method</Badge>
+
+Determines whether the current route has defined params
+
+## API
+
+```ts copy
+hasParams(): boolean;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Creates a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+});
+
+if (route.hasParams()) {
+  // Some logic
+}
+```

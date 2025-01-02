@@ -1,0 +1,15 @@
+export default {
+  ngStore: 'NgStore',
+  signalStateFn: 'signalState',
+  signalState: 'SignalState',
+  asyncSignalGroupFn: 'asyncSignalGroup',
+  asyncSignalGroup: 'AsyncSignalGroup',
+  routeGroupFn: 'routeGroup',
+  routeGroup: 'RouteGroup',
+  routeGroupSettings: 'RouteGroupSettings',
+  routeFiltersGroupFn: 'routeFiltersGroup',
+  routeFiltersGroup: 'RouteFiltersGroup',
+  routeFiltersGroupSettings: 'RouteFiltersGroupSettings',
+  formSourceFn: 'formSource',
+  formSource: 'FormSource',
+};

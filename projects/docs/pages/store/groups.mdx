@@ -1,0 +1,263 @@
+import {Callout} from 'nextra/components';
+import {RxLink} from '../../';
+
+# Groups
+
+Groups are collections of emitters, states, and other groups that are unified under a specific
+feature. They help organize related reactive sources into a cohesive structure, ensuring proper
+initialization and completion of all items as a single unit.
+
+<Callout
+  type="info"
+  emoji="ℹ️"
+>
+  For more detailed information about using groups, refer to
+  the <RxLink href="store/groups">Basic Groups Documentation</RxLink>.
+</Callout>
+
+## List of Groups
+
+1. ### [Async Signal Group](/store/reference/asyncSignalGroupFn)
+
+The async signal group manages the lifecycle of asynchronous actions, providing emitters for
+launching actions, handling success, dealing with failures, and managing the signal state of
+these actions.
+
+It provides the same functionality as the <RxLink href="store/reference/asyncGroup">AsyncGroup</RxLink>.
+However, it uses a signal state instead of a standard state that can be used in Angular's `effect`
+or `computed` functions and in other places where you would normally use a signal.
+
+```ts copy
+import {computed} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {signalState, asyncSignalGroup} from '@bitfiber/ng/rx';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  products: Product[];
+  isLoading: boolean;
+}
+
+// Provides an async group for managing products loading process
+const productsReq = asyncSignalGroup<number, Product[], Error>((group, {
+  launch, success, fail, finish,
+}) => {
+  group
+    // Keeps cached data for 120 seconds, with a maximum entry count of 10
+    .useCache(120, 10);
+
+  launch
+    // Defines a side effect for loading products
+    .effect(switchMap(page => productsService.get(`api/products?page=${page}`)
+      .pipe(transmit(group))));
+
+  success
+    // Performs a tap callback each time the request succeeds
+    .tap(data => console.log(data));
+
+  fail
+    // Performs a tap callback each time the request fails
+    .tap(error => console.log(error));
+
+  finish
+    // Performs a tap callback each time the request either fails or succeeds
+    .tap(() => console.log('Request has been finished'));
+}, []);
+
+// Provides the main state
+const data = signalState<ProductsState>({products: [], isLoading: false}, s => s
+  // Receives request success data
+  .receive(productsReq.success, (products, state) => ({...state, products}))
+);
+
+// Provides the loading status state
+const isLoading = computed(() => productsReq.state().inProgress);
+
+// Starts the products loading process
+productsReq.launch.emit(1);
+```
+
+2. ### [Route Group](/store/reference/routeGroupFn)
+
+The route group simplifies the reactive management of Angular's route data, including params,
+query params, and the fragment, all within the current route.
+
+Route states are represented as signal states, allowing them to be used in Angular's reactive
+constructs such as `effect` and `computed` functions, as well as in other contexts where signals
+are commonly applied.
+
+```ts copy
+import {computed} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+import {routeGroup} from '@bitfiber/ng/rx';
+
+interface RouteParams {
+  id: number;
+  type: string;
+}
+
+interface RouteQueryParams {
+  page: number;
+  search: string;
+  groupId: number | null;
+}
+
+// Creates a route group for managing route data
+const route = routeGroup<RouteQueryParams, RouteParams>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {search: '', page: 1, groupId: null},
+  segments: params => [params.type, params.id],
+  hasFragment: true,
+}, ({params, queryParams, allParams, fragment}) => {
+  params
+    // Defines a side effect for the route params change
+    .tap(data => console.log(data));
+
+  queryParams
+    // Defines a side effect for the query params change
+    .tap(data => console.log(data));
+
+  allParams
+    // Defines a side effect for changes in either route or query params
+    .tap(data => console.log(data));
+
+  fragment
+    // Defines a side effect for fragment changes
+    .tap(fragment => console.log(fragment));
+});
+
+// Creates an emitter for triggering the products loading process
+const productsReq = emitter<RouteQueryParams & RouteParams>(e => e
+  // Reloads products when route params are updated
+  .receive(route.allParams)
+  // Defines a side effect for the products loading process
+  .effect(switchMap(params => productsService.getAll(params))));
+
+// Computes a CSS class based on the route type
+const typeClass = computed(() => `bf-${route.params().type}`);
+
+// Initializes the group and all its items
+route.initialize();
+
+// Updates the route params and their associated state
+route.params.set({id: 2, type: 'new'});
+
+// Updates the query params and their associated state
+route.queryParams.update(state => ({...state, search: 'abc'}));
+
+// Updates both params and query params in the route and their associated states
+route.allParams.update(state => ({...state, type: 'old', search: 'abc'}));
+
+// Updates the fragment in the route and its associated state
+route.fragment.set('someFragment');
+
+// Simultaneously updates all states and the route params, query params, and fragment
+route.changeUrl({id: 2, type: 'new', search: 'abc'}, 'someFragment');
+
+// Resets all states, params, query params, and fragment to their initial values
+route.resetUrl();
+
+// Completes the group and all its items
+route.complete();
+```
+
+3. ### [Route Filters Group](/store/reference/routeFiltersGroupFn)
+
+The route filters group simplifies the reactive management of Angular's form-based filters by
+linking these filters to the route.
+
+The filters state is represented as a signal state, allowing it to be used in Angular's reactive
+constructs such as `effect` and `computed` functions, as well as in other contexts where signals
+are commonly applied.
+
+```ts copy filename="products.store.ts"
+import {computed, Injectable} from '@angular/core';
+import {switchMap} from 'rxjs';
+import {transmit} from '@bitfiber/rx';
+import {asyncSignalGroup, routeFiltersGroup, signalState, NgStore} from '@bitfiber/ng/rx';
+
+interface ProductsFilters {
+  search: string;
+  page: number;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  products: Product[];
+}
+
+@Injectable()
+class ProductsStore extends NgStore {
+  // Synchronizes the filters state with the route and the filters form
+  routeFilters = routeFiltersGroup<ProductsFilters>({
+    initialQueryParams: {search: '', page: 1},
+  });
+
+  // Provides an async group for managing products loading process
+  productsReq = asyncSignalGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      // Reloads products when filters are updated
+      .receive(this.routeFilters.filters)
+      // Defines a side effect for loading products
+      .effect(switchMap(filters => productsService.get(filters).pipe(transmit(productsReq))));
+  }, []);
+
+  // Provides the loading status state
+  isLoading = computed(() => this.productsReq.state().inProgress);
+
+  // Provides the main store state
+  data = signalState<ProductsState>({products: []}, s => s
+    // Updates the state when the products request succeeds
+    .receive(this.productsReq.success, products => ({products})),
+  );
+}
+```
+
+```ts copy filename="products.component.ts"
+import {Component, inject} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'bf-products',
+  standalone: true,
+  templateUrl: './products.component.html',
+  imports: [ReactiveFormsModule],
+  providers: [ProductsStore],
+})
+export class ProductsComponent {
+  readonly store = inject(ProductsStore).initialize();
+  readonly form = this.store.routeFilters.form;
+}
+```
+
+```angular-html copy filename="products.component.html"
+@if (store.isLoading()) {
+  <div
+    class="bf-filters"
+    [formGroup]="form"
+  >
+    <input formControlName="search"/>
+    <pagenator formControlName="page"/>
+  </div>
+
+  @for (product of store.data().products) {
+    <div class="bf-product">
+      {{product.name}}
+    </div>
+  }
+} @else {
+  Data is loading...
+}
+```

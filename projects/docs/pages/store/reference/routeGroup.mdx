@@ -1,0 +1,87 @@
+import {Badge} from '../../../';
+
+# RouteGroup <Badge type={'class'}>Class</Badge>
+
+Represents a route group that facilitates the reactive management of Angular's route data,
+including params, query params, and the fragment, within the current route.
+
+Route elements are represented as signal states, making them usable in Angular's reactive
+constructs such as `effect` or `computed` functions, and other places where signals are
+typically used.
+
+The properties of the generic types `Q` and `P` can be any type because, before being set to
+the route, they are converted to strings using `JSON.stringify`. When states receive parameters
+from the route, they are converted back to their respective types using `JSON.parse`.
+
+This class extends `AbstractGroup` to provide a structured way to organize and manage
+route-related states within the Rx store
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+See also: [RouteGroupSettings](/store/reference/routeGroupSettings)
+
+## API
+
+```ts copy
+class RouteGroup<Q extends Index = object, P extends Index = object> extends AbstractGroup {
+  readonly params: SignalStateType<P>;
+  readonly queryParams: SignalStateType<Q>;
+  readonly allParams: SignalStateType<Q & P>;
+  readonly fragment: SignalStateType<string | null>;
+  constructor(settings: RouteGroupSettings<Q, P>);
+  initialize(): this;
+  complete(): void;
+  changeUrl(data: Partial<Q | P>, fragment?: string): void;
+  resetUrl(): void;
+  hasParams(): boolean;
+  hasQueryParams(): boolean;
+  hasAnyParams(): boolean;
+  hasFragment(): boolean;
+}
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+interface RouteParams {
+  id: number;
+  type: string;
+}
+
+interface RouteQueryParams {
+  page: number;
+  search: string;
+  groupId: number | null;
+}
+
+// Creates a route group for managing route data
+const route = routeGroup<RouteQueryParams, RouteParams>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {search: '', page: 1, groupId: null},
+  segments: params => [params.type, params.id],
+  hasFragment: true,
+  navigationExtras: {},
+}, ({params, queryParams, allParams, fragment}) => {
+  params
+    // Defines a side effect for the route params change
+    .tap(data => console.log(data));
+
+  queryParams
+    // Defines a side effect for the query params change
+    .tap(data => console.log(data));
+
+  allParams
+    // Defines a side effect for changes in either route or query params
+    .tap(data => console.log(data));
+
+  fragment
+    // Defines a side effect for fragment changes
+    .tap(fragment => console.log(fragment));
+});
+```

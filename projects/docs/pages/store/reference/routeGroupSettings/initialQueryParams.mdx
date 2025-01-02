@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# initialQueryParams <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Initial values for the query params
+
+## API
+
+```ts copy
+initialQueryParams?: Q;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group
+const route = routeGroup<{id: number; type: string}>({
+  // Sets the initial values for query params
+  initialQueryParams: {id: 0, type: 'all'},
+});
+```

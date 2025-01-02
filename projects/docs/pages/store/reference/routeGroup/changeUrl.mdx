@@ -1,0 +1,34 @@
+import {Badge} from '../../../../';
+
+# changeUrl <Badge type={'method'}>Method</Badge>
+
+Updates the current URL by modifying the query params, route params, or fragment
+
+`@param data: Partial<Q | P> {:ts}`  
+A partial object containing the query or route params to update
+
+`@param fragment?: string {:ts}`  
+An optional string to update the URL fragment
+
+## API
+
+```ts copy
+changeUrl(data: Partial<Q | P>, fragment?: string): void;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Creates a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+});
+
+// Initializes the group and all items within the group
+route.initialize();
+
+// Updates all states, such as the route params, query params and fragment
+route.changeUrl({id: 2, type: 'new'}, 'someFragment');
+```

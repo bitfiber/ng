@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# state <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+The signal state that tracks the status of an asynchronous action,
+including counters for successes and failures, as well as flags indicating whether the action
+is in progress, has completed successfully, or has failed
+
+## API
+
+```ts copy
+readonly state: SignalStateType<AsyncData>;
+```
+
+## Example
+
+```ts copy
+import {asyncSignalGroup} from '@bitfiber/ng/rx';
+
+// Creates an asynchronous group
+const group = asyncSignalGroup<number, string[], Error>(({state}) => {
+  state
+    // Performs a tap callback each time the request state changes
+    .tap(req => console.log(req.inProgress));
+});
+```

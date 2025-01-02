@@ -4,13 +4,13 @@
   "extends": "eslint:recommended",
   "overrides": [
     {
-      "files": ["*.js", "*.jsx"],
+      "files": ["*.js", "*.mjs", "*.jsx"],
       "rules": {
         "no-extra-semi": "off"
       }
     },
     {
-      "files": ["*.spec.js", "*.spec.jsx", "*.spec.ts", "*.spec.tsx"],
+      "files": ["*.spec.js", "*.spec.mjs", "*.spec.jsx", "*.spec.ts", "*.spec.tsx"],
       "rules": {
         "no-undef": "off"
       }

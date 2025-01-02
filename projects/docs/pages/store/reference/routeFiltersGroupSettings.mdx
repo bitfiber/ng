@@ -1,0 +1,47 @@
+import {Badge} from '../../../';
+
+# RouteFiltersGroupSettings <Badge type={'interface'}>Interface</Badge>
+
+Defines the settings for configuring a [RouteFiltersGroup](/store/reference/routeFiltersGroup),
+which manages the synchronization between form-based filters and the current route's query and
+route parameters.
+
+This interface extends `RouteGroupSettings` and provides additional configuration options
+specific to filter controls, allowing customization of how the form controls interact with
+the route parameters and how their values are processed
+
+`@template Q extends Index = object {:ts}`  
+The type representing the query params of the route
+
+`@template P extends Index = object {:ts}`  
+The type representing the params of the route
+
+## API
+
+```ts copy
+interface RouteFiltersGroupSettings<Q extends Index = object, P extends Index = object>
+  extends RouteGroupSettings<Q, P> {
+  controlsFlow?: (form: FormGroup<FilterControls<Q & P>>) => Observable<Partial<Q & P>>;
+  controlOperators?: ControlOperators<Partial<Q & P>>;
+  onControlChange?: (form: FormGroup<FilterControls<Q & P>>,
+    controlName: keyof (Q & P), data: Partial<Q & P>) => void;
+  withoutRoute?: boolean;
+}
+```
+
+## Example
+
+```ts copy
+import {debounceTime} from 'rxjs';
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Provides a route filters group configured with specific settings
+const routeFilters = routeFiltersGroup<{page: number; search: string}, {id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {page: 1, search: ''},
+  segments: params => [params.type, params.id],
+  controlOperators: {search: [debounceTime(150)]},
+  onControlChange: ({controls}, key) => (key !== 'page' && controls.page?.setValue(1)),
+  hasFragment: true,
+});
+```

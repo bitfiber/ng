@@ -1,0 +1,68 @@
+.bf-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bf-logo__text {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.bf-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.bf-badge {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding: 0.2rem 0.75rem;
+  border-radius: 4rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.bf-links {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  font-size: 1rem;
+}
+
+.bf-link {
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+  color: #008dff;
+}
+
+.bf-link:hover {
+  text-decoration: none;
+  color: #00a6ff;
+}
+
+.bf-ref-cards {
+  display: block;
+  width: 100%;
+}
+
+.bf-ref-cards > .nextra-cards {
+  grid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - 1rem * 2) / 2)), 1fr));
+}
+
+.bf-ref-cards > .nextra-cards > .nextra-card > span {
+  flex-direction: row-reverse;
+  justify-content: start;
+}

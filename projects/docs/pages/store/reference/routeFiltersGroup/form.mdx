@@ -1,0 +1,31 @@
+import {Badge} from '../../../../';
+
+# form <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+A `FormGroup` instance that manages the filter controls, where each control corresponds to
+either a query param or a route param.
+
+This form group is responsible for handling both user input and programmatic updates.
+Changes made in the form controls are automatically reflected in the filters state and
+synchronized with the route params, ensuring consistency between the form, filters state,
+and the route
+
+## API
+
+```ts copy
+readonly form: FormGroup<FilterControls<Q & P>>;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+});
+
+// Updates the form value, triggering changes to the filters state and the route
+routeFilters.form.patchValue({search: 'str'});
+```

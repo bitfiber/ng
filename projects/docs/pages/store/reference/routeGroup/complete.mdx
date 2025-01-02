@@ -1,0 +1,32 @@
+import {Badge} from '../../../../';
+
+# complete <Badge type={'method'}>Method</Badge>
+
+Completes the group and all its items, signaling to all item subscribers that no more values
+will be emitted.
+
+Once the group is completed, Its items will no longer emit any values, and any subsequent
+subscriptions will immediately receive an error.
+
+In most cases, this method will be called automatically by a group or store managing the group,
+so you generally don't need to call it manually unless you have a specific reason to do so
+
+## API
+
+```ts copy
+complete(): void;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Creates a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+});
+
+// Completes the group and all items within the group
+route.complete();
+```

@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# allParams <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+A signal state that includes the route params and query params
+
+## API
+
+```ts copy
+readonly allParams: SignalStateType<Q & P>;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a group of signal states for managing the route
+const route = routeGroup<{page: number; search: string}, {id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  initialQueryParams: {search: '', page: 1},
+}, ({allParams}) => {
+  allParams
+    // Performs a tap callback each time either the route params or query params change
+    .tap(data => console.log(data));
+});
+```

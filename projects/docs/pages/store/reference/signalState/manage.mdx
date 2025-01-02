@@ -1,0 +1,34 @@
+import {Badge} from '../../../../';
+
+# manage <Badge type={'method'}>Method</Badge>
+
+Defines management operators for all state streams.
+These operators are applied to the streams managed by this state,
+allowing you to modify or control their behavior, such as filtering,
+mapping, or handling errors, without altering the type of the emitted values
+
+`@param ...operators: OperatorFunction<T, T>[] {:ts}`   
+One or more RxJS operators to apply to the state streams
+
+`@returns this {:ts}`  
+The instance of the state, allowing for method chaining
+
+## API
+
+```ts copy
+manage(...operators: OperatorFunction<T, T>[]): this;
+```
+
+## Example
+
+```ts copy
+import {delay, filter} from 'rxjs';
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(0, s => s
+  // All streams created by this state will delay and filter the data
+  .manage(
+    filter(id => !!(id % 2)),
+    delay(100),
+  ));
+```

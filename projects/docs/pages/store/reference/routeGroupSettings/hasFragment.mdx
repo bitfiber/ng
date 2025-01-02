@@ -1,0 +1,24 @@
+import {Badge} from '../../../../';
+
+# hasFragment <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A boolean flag indicating whether the route has a fragment
+
+## API
+
+```ts copy
+hasFragment?: boolean;
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  // Indicates whether the route includes a fragment
+  hasFragment: true,
+});
+```

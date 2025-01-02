@@ -1,0 +1,29 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Returns the current value of the state.
+This method is useful for accessing the state at any point in time,
+allowing other store items or consumers to retrieve the latest value
+
+`@returns T {:ts}`
+
+## API
+
+```ts copy
+get(): T;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(10);
+
+// Returns the current value
+const value1 = data.get(); // Output: 10
+
+// Returns the current value
+const value2 = data(); // Output: 10
+```

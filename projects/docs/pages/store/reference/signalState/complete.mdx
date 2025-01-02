@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# complete <Badge type={'method'}>Method</Badge>
+
+Completes the state, signaling to all subscribers that no more values will be emitted.
+
+Once the state is completed, it will not emit any further values, and any subsequent subscriptions
+will immediately receive an error.
+
+In most cases, this method will be called automatically by a group or store managing the state,
+so you generally don't need to call it manually unless you have a specific reason to do so
+
+## API
+
+```ts copy
+complete(): void;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(10);
+
+// Completes the state
+data.complete();
+```

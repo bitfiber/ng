@@ -1,0 +1,24 @@
+import {Badge} from '../../../../';
+
+# excludedParams <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+A list of route param or query param keys that should be excluded from the route
+
+## API
+
+```ts copy
+excludedParams?: (keyof (Q & P))[];
+```
+
+## Example
+
+```ts copy
+import {routeGroup} from '@bitfiber/ng/rx';
+
+// Provides a route group
+const route = routeGroup<{id: number; type: string}>({
+  initialParams: {id: 0, type: 'all'},
+  // Excludes specific route params and query params from the route
+  excludedParams: ['type'],
+});
+```

@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# route <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An instance of `RouteGroup` that manages the route's query and route params
+
+## API
+
+```ts copy
+readonly route: RouteGroup<Q, P>;
+```
+
+## Example
+
+```ts copy
+import {routeFiltersGroup} from '@bitfiber/ng/rx';
+
+// Creates a route filters group
+const routeFilters = routeFiltersGroup<{page: number; search: string}>({
+  initialQueryParams: {page: 1, search: ''},
+});
+
+// Resets the route to its initial param values
+routeFilters.route.resetUrl();
+```

@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# initialize <Badge type={'method'}>Method</Badge>
+
+Initiates the state.  
+In most cases, this method will be called automatically by a group or store managing
+the state, so you generally don't need to call it manually unless you have a specific
+reason to do so
+
+`@returns this {:ts}`  
+The current instance of the store, allowing for method chaining
+
+## API
+
+```ts copy
+initialize(): this;
+```
+
+## Example
+
+```ts copy
+import {signalState} from '@bitfiber/ng/rx';
+
+const data = signalState<number>(10);
+
+// Initialize the state
+data.initialize();
+```

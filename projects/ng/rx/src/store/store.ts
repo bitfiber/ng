@@ -3,13 +3,22 @@ import {DestroyRef, inject} from '@angular/core';
 import {Store} from '@bitfiber/rx';
 
 /**
- * Extends `Store` and provides functionality for managing store items such as emitters, states,
- * and groups within an Angular context.
+ * The `NgStore` class is a foundational component for implementing reactive state management and
+ * handling asynchronous data flow in modules or entire applications. It serves as a central hub,
+ * organizing and managing store items like emitters, states, and groups, ensuring seamless
+ * interaction among them.
  *
- * The `NgStore` class manages the lifecycle of store items, including their initialization and
- * completion. It provides lifecycle hooks that allow custom logic to be executed before and after
- * key events such as store initialization and completion. This class serves as a base for creating
- * specific store implementations in Angular applications
+ * Stores can also include methods to trigger specific actions, making them a powerful and
+ * flexible tool for coordinating complex application logic. Their structured design simplifies
+ * the development of scalable, maintainable, and reactive applications, ensuring consistency and
+ * clarity in managing state and data flow.
+ *
+ * By implementing the `StoreHooks` interface, the store provides lifecycle hooks for executing
+ * custom logic before and after key events, such as store initialization and completion.
+ *
+ * The `NgStore` class extends `Store` and serves as an abstract foundation designed to serve as
+ * a base for specific store implementations in Angular applications that define concrete
+ * collections of store items
  *
  * @abstract
  */
